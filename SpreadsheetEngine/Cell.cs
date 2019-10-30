@@ -23,11 +23,6 @@ namespace SpreadsheetEngine
         private string text;
 
         /// <summary>
-        ///     Cell Value
-        /// </summary>
-        private string value;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
         /// </summary>
         /// <param name="columnIndex">
@@ -38,10 +33,10 @@ namespace SpreadsheetEngine
         /// </param>
         protected Cell(int columnIndex, int rowIndex)
         {
-            this.RowIndex = rowIndex;
+            this.RowIndex    = rowIndex;
             this.ColumnIndex = columnIndex;
-            this.Text = string.Empty;
-            this.value = string.Empty;
+            this.Text        = string.Empty;
+            this.Value       = string.Empty;
         }
 
         /// <summary>
@@ -78,10 +73,6 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Gets or sets value of the cell
         /// </summary>
-        public string Value
-        {
-            get => this.value;
-            protected set => this.value = value;
-        }
+        public string Value { get; protected set; }
     }
 }

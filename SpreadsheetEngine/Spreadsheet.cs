@@ -29,16 +29,6 @@ namespace SpreadsheetEngine
         private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
 
         /// <summary>
-        ///     Amount of Columns the Spreadsheet contains
-        /// </summary>
-        private readonly int columns;
-
-        /// <summary>
-        ///     Amount of Rows the Spreadsheet contains
-        /// </summary>
-        private readonly int rows;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="Spreadsheet" /> class.
         /// </summary>
         /// <param name="columns">
@@ -49,12 +39,12 @@ namespace SpreadsheetEngine
         /// </param>
         public Spreadsheet(int columns, int rows)
         {
-            this.columns = columns;
-            this.rows    = rows;
+            this.ColumnCount = columns;
+            this.RowCount    = rows;
 
-            for (var column = 0; column < this.columns; column++)
+            for (var column = 0; column < this.ColumnCount; column++)
             {
-                for (var row = 0; row < this.rows; row++)
+                for (var row = 0; row < this.RowCount; row++)
                 {
                     var newCell = new SpreadsheetCell(column + 1, row + 1);
                     newCell.PropertyChanged += this.CellChange;
@@ -71,12 +61,31 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Gets Number of Columns
         /// </summary>
-        public int ColumnCount => this.columns;
+        public int ColumnCount { get; }
 
         /// <summary>
         ///     Gets Number of Rows
         /// </summary>
-        public int RowCount => this.rows;
+        public int RowCount { get; }
+
+        /// <summary>
+        ///     Gets a Cell from the Spreadsheet
+        /// </summary>
+        /// <param name="column">
+        ///     The Cell Column
+        /// </param>
+        /// <param name="row">
+        ///     The Cell Row
+        /// </param>
+        /// <returns>
+        ///     The requested Cell, or null if it does not exist.
+        /// </returns>
+        public Cell GetCell(int column, int row)
+        {
+            var key = SpreadsheetCell.GenerateKey(column, row);
+
+            return this.cells.ContainsKey(key) ? this.cells[key] : null;
+        }
 
         /// <summary>
         ///     Helper function to listen to Cell events.

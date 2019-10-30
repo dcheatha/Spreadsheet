@@ -8,19 +8,24 @@ namespace SpreadsheetEngine
 {
     #region
 
-    using System;
+    using System.ComponentModel;
 
     #endregion
 
     /// <summary>
     ///     Represents a cell in the spreadsheet.
     /// </summary>
-    public abstract class Cell
+    public abstract class Cell : INotifyPropertyChanged
     {
         /// <summary>
         ///     Text Value
         /// </summary>
         private string text;
+
+        /// <summary>
+        ///     Cell Value
+        /// </summary>
+        private string value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
@@ -36,7 +41,13 @@ namespace SpreadsheetEngine
             this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;
             this.Text = string.Empty;
+            this.value = string.Empty;
         }
+
+        /// <summary>
+        ///     Event Handler for Cell
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Gets ColumnIndex of the cell.
@@ -58,10 +69,19 @@ namespace SpreadsheetEngine
             {
                 if (value != this.text)
                 {
-                    Console.WriteLine("It's different");
                     this.text = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("text"));
                 }
             }
+        }
+
+        /// <summary>
+        ///     Gets or sets value of the cell
+        /// </summary>
+        public string Value
+        {
+            get => this.value;
+            protected set => this.value = value;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Spreadsheet_D._Cheatham
             this.mainDataGridView.Rows.Add(50);
             for (var pos = 0; pos < 50; pos++)
             {
-                //Set headers for all of the rows.
+                // Set headers for all of the rows.
                 this.mainDataGridView.Rows[pos].HeaderCell.Value = (pos + 1).ToString();
             }
         }

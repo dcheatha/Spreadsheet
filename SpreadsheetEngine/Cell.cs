@@ -1,0 +1,67 @@
+﻿// ==================================================
+// D. Cheatham (SID: xxxxxxxx)
+// Cell.cs - SpreadsheetEngine
+// Created 2019/10/29 at 22:10
+// ==================================================
+
+namespace SpreadsheetEngine
+{
+    #region
+
+    using System;
+
+    #endregion
+
+    /// <summary>
+    ///     Represents a cell in the spreadsheet.
+    /// </summary>
+    public abstract class Cell
+    {
+        /// <summary>
+        ///     Text Value
+        /// </summary>
+        private string text;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Cell" /> class.
+        /// </summary>
+        /// <param name="columnIndex">
+        ///     ColumnIndex of the cell.
+        /// </param>
+        /// <param name="rowIndex">
+        ///     RowIndex of the cell.
+        /// </param>
+        protected Cell(int columnIndex, int rowIndex)
+        {
+            this.RowIndex = rowIndex;
+            this.ColumnIndex = columnIndex;
+            this.Text = string.Empty;
+        }
+
+        /// <summary>
+        ///     Gets ColumnIndex of the cell.
+        /// </summary>
+        public int ColumnIndex { get; }
+
+        /// <summary>
+        ///     Gets RowIndex of the cell.
+        /// </summary>
+        public int RowIndex { get; }
+
+        /// <summary>
+        ///     Gets or sets Text Value of the cell.
+        /// </summary>
+        public string Text
+        {
+            get => this.text;
+            set
+            {
+                if (value != this.text)
+                {
+                    Console.WriteLine("It's different");
+                    this.text = value;
+                }
+            }
+        }
+    }
+}

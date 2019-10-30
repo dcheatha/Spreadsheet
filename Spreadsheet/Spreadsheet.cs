@@ -32,13 +32,13 @@ namespace Spreadsheet_D._Cheatham
         private static extern bool SetProcessDPIAware();
 
         /// <summary>
-        /// Loads the spreadsheet
+        ///     Loads the spreadsheet
         /// </summary>
         /// <param name="sender">
-        /// Event Sender
+        ///     Event Sender
         /// </param>
         /// <param name="e">
-        /// Event that is the Event
+        ///     Event that is the Event
         /// </param>
         private void SpreadsheetLoad(object sender, EventArgs e)
         {
@@ -46,6 +46,13 @@ namespace Spreadsheet_D._Cheatham
             {
                 var letter = char.Parse("A");
                 this.mainDataGridView.Columns.Add(pos.ToString(), ((char)(letter + pos)).ToString());
+            }
+
+            this.mainDataGridView.Rows.Add(50);
+            for (var pos = 0; pos < 50; pos++)
+            {
+                //Set headers for all of the rows.
+                this.mainDataGridView.Rows[pos].HeaderCell.Value = (pos + 1).ToString();
             }
         }
     }

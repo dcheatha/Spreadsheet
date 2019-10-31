@@ -1,6 +1,6 @@
 ﻿namespace Spreadsheet_D._Cheatham
 {
-    partial class Spreadsheet
+    partial class SpreadsheetForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.mainDataGridView = new System.Windows.Forms.DataGridView();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.mainDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,13 +47,25 @@
             this.mainDataGridView.Size = new System.Drawing.Size(800, 450);
             this.mainDataGridView.TabIndex = 0;
             // 
-            // Spreadsheet
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.button1.Location = new System.Drawing.Point(0, 360);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(800, 90);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Run Demo";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler((sender, e) => this.RunDemoButtonClick());
+            // 
+            // SpreadsheetForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.mainDataGridView);
-            this.Name = "Spreadsheet";
+            this.Name = "SpreadsheetForm";
             this.Text = "Totally Modern Spreadsheet Application";
             this.Load += new System.EventHandler(this.SpreadsheetLoad);
             ((System.ComponentModel.ISupportInitialize)(this.mainDataGridView)).EndInit();
@@ -63,6 +76,7 @@
         #endregion
 
         private System.Windows.Forms.DataGridView mainDataGridView;
+        private System.Windows.Forms.Button button1;
     }
 }
 

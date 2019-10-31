@@ -4,8 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet_D._Cheatham", "Spreadsheet_D._Cheatham\Spreadsheet_D._Cheatham.csproj", "{F2CF022D-16E5-4D47-8FA4-9B563FD1985C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC} = {4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

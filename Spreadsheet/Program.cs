@@ -26,7 +26,7 @@ namespace Spreadsheet_D._Cheatham
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Spreadsheet());
+            Application.Run(new SpreadsheetForm());
         }
     }
 }

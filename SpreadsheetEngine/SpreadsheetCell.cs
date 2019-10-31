@@ -23,6 +23,15 @@ namespace SpreadsheetEngine
         public string Key => GenerateKey(this.ColumnIndex, this.RowIndex);
 
         /// <summary>
+        /// Gets or sets Please stop already StyleCop, I'm crying.
+        /// </summary>
+        public new string Value
+        {
+            get => base.Value;
+            set => base.Value = value;
+        }
+
+        /// <summary>
         ///     Generates a Key for the Spreadsheet Dictionary
         /// </summary>
         /// <param name="column">

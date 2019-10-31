@@ -48,11 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Spreadsheet.cs">
+    <Compile Include="SpreadsheetForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Spreadsheet.Designer.cs">
-      <DependentUpon>Spreadsheet.cs</DependentUpon>
+    <Compile Include="SpreadsheetForm.Designer.cs">
+      <DependentUpon>SpreadsheetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,8 +65,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Spreadsheet.resx">
-      <DependentUpon>Spreadsheet.cs</DependentUpon>
+    <EmbeddedResource Include="SpreadsheetForm.resx">
+      <DependentUpon>SpreadsheetForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -80,6 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpreadsheetEngine\SpreadsheetEngine.csproj">
+      <Project>{4be13b9f-c2e1-4306-b26a-be4b4477d7cc}</Project>
+      <Name>SpreadsheetEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

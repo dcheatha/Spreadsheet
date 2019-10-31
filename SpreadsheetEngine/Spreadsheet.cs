@@ -13,6 +13,7 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Text.RegularExpressions;
 
     #endregion
 
@@ -46,7 +47,7 @@ namespace SpreadsheetEngine
             {
                 for (var row = 0; row < this.RowCount; row++)
                 {
-                    var newCell = new SpreadsheetCell(column + 1, row + 1);
+                    var newCell = new SpreadsheetCell(column, row);
                     newCell.PropertyChanged += this.CellChange;
                     this.cells.Add(newCell.Key, newCell);
                 }
@@ -88,6 +89,68 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Runs the demo requested
+        /// </summary>
+        public void RunDemo()
+        {
+            var rnd = new Random();
+
+            for (var pos = 0; pos < this.RowCount; pos++)
+            {
+                var beeCell = this.GetSpreadsheetCell(1, pos);
+                beeCell.Text = $"This is cell B{pos + 1}!";
+
+                var ahhCell = this.GetSpreadsheetCell(0, pos);
+                ahhCell.Text = $"=B{pos + 1}";
+            }
+
+            // I know this can cause an inf loop, but it's just a demo...
+            for (var pos = 0; pos < 50; pos++)
+            {
+                var column = rnd.Next(0, this.ColumnCount);
+                var row    = rnd.Next(1, this.RowCount);
+
+                var cell = this.GetSpreadsheetCell(column, row);
+
+                if (cell.Text != string.Empty)
+                {
+                    pos--;
+                }
+                else
+                {
+                    cell.Text = "Random!";
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Converts something like AB to 28.
+        /// </summary>
+        /// <param name="input">
+        ///     Input string
+        /// </param>
+        /// <returns>
+        ///     Integer value
+        /// </returns>
+        private int AlphanumericToInteger(string input)
+        {
+            if (input.Length == 0)
+            {
+                return 0;
+            }
+
+            var letter   = char.Parse("A");
+            var position = input[0] - letter;
+
+            if (input.Length == 1)
+            {
+                return position;
+            }
+
+            return position + this.AlphanumericToInteger(input.Substring(1));
+        }
+
+        /// <summary>
         ///     Helper function to listen to Cell events.
         /// </summary>
         /// <param name="cell">
@@ -98,7 +161,68 @@ namespace SpreadsheetEngine
         /// </param>
         private void CellChange(object cell, EventArgs e)
         {
+            var c = (SpreadsheetCell)cell;
+            this.EvaluateCell(c);
             this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.ToString()));
+        }
+
+        /// <summary>
+        ///     Evaluates a Cell
+        /// </summary>
+        /// <param name="cell">
+        ///     Cell to be evaluated
+        /// </param>
+        private void EvaluateCell(SpreadsheetCell cell)
+        {
+            if (!cell.Text.StartsWith("="))
+            {
+                cell.Value = cell.Text;
+                return;
+            }
+
+            var link       = cell.Text.Substring(1);
+            var linkedCell = this.FollowCellLink(link);
+
+            cell.Text = linkedCell.Text;
+        }
+
+        /// <summary>
+        ///     Follows a link in a Cell such as A12
+        /// </summary>
+        /// <param name="link">
+        ///     String of link
+        /// </param>
+        /// <returns>
+        ///     Cell that was linked to
+        /// </returns>
+        private SpreadsheetCell FollowCellLink(string link)
+        {
+            var columnText = Regex.Replace(link, @"[^A-Z]+", string.Empty);
+            var rowText    = Regex.Replace(link, @"[A-Z]+",  string.Empty);
+
+            var column = this.AlphanumericToInteger(columnText);
+            var row    = int.Parse(rowText);
+
+            return this.GetSpreadsheetCell(column, row - 1);
+        }
+
+        /// <summary>
+        ///     Gets a SpreadsheetCell from the Spreadsheet
+        /// </summary>
+        /// <param name="column">
+        ///     The Cell Column
+        /// </param>
+        /// <param name="row">
+        ///     The Cell Row
+        /// </param>
+        /// <returns>
+        ///     The requested Cell, or null if it does not exist.
+        /// </returns>
+        private SpreadsheetCell GetSpreadsheetCell(int column, int row)
+        {
+            var key = SpreadsheetCell.GenerateKey(column, row);
+
+            return this.cells.ContainsKey(key) ? (SpreadsheetCell)this.cells[key] : null;
         }
     }
 }

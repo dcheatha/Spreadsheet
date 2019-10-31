@@ -103,7 +103,7 @@ namespace Spreadsheet_D._Cheatham
                 this.mainDataGridView.Rows[pos].HeaderCell.Value = (pos + 1).ToString();
             }
 
-            this.spreadsheet                     = new Spreadsheet(columns, rows);
+            this.spreadsheet                     =  new Spreadsheet(columns, rows);
             this.spreadsheet.CellPropertyChanged += this.OnEngineCellChange;
 
             this.mainDataGridView.CellValueChanged += this.OnFormCellChange;

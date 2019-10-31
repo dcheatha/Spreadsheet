@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet_D._Cheatham", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetEngineTester", "SpreadsheetEngineTester\SpreadsheetEngineTester.csproj", "{BF80D9AE-168D-401A-A55E-AE21D7D7FBAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BE13B9F-C2E1-4306-B26A-BE4B4477D7CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF80D9AE-168D-401A-A55E-AE21D7D7FBAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF80D9AE-168D-401A-A55E-AE21D7D7FBAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF80D9AE-168D-401A-A55E-AE21D7D7FBAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF80D9AE-168D-401A-A55E-AE21D7D7FBAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

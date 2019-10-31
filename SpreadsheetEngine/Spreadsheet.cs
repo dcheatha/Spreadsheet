@@ -4,6 +4,14 @@
 // Created 2019/10/30 at 00:12
 // ==================================================
 
+#region
+
+using System.Runtime.CompilerServices;
+
+#endregion
+
+[assembly: InternalsVisibleTo("SpreadsheetEngineTester")]
+
 namespace SpreadsheetEngine
 {
     #region
@@ -124,6 +132,26 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Follows a link in a Cell such as A12
+        /// </summary>
+        /// <param name="link">
+        ///     String of link
+        /// </param>
+        /// <returns>
+        ///     Cell that was linked to
+        /// </returns>
+        internal SpreadsheetCell FollowCellLink(string link)
+        {
+            var columnText = Regex.Replace(link, @"[^A-Z]+", string.Empty);
+            var rowText    = Regex.Replace(link, @"[A-Z]+",  string.Empty);
+
+            var column = this.AlphanumericToInteger(columnText);
+            var row    = int.Parse(rowText);
+
+            return this.GetSpreadsheetCell(column, row - 1);
+        }
+
+        /// <summary>
         ///     Converts something like AB to 28.
         /// </summary>
         /// <param name="input">
@@ -187,26 +215,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        ///     Follows a link in a Cell such as A12
-        /// </summary>
-        /// <param name="link">
-        ///     String of link
-        /// </param>
-        /// <returns>
-        ///     Cell that was linked to
-        /// </returns>
-        private SpreadsheetCell FollowCellLink(string link)
-        {
-            var columnText = Regex.Replace(link, @"[^A-Z]+", string.Empty);
-            var rowText    = Regex.Replace(link, @"[A-Z]+",  string.Empty);
-
-            var column = this.AlphanumericToInteger(columnText);
-            var row    = int.Parse(rowText);
-
-            return this.GetSpreadsheetCell(column, row - 1);
-        }
-
-        /// <summary>
         ///     Gets a SpreadsheetCell from the Spreadsheet
         /// </summary>
         /// <param name="column">
@@ -218,7 +226,7 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     The requested Cell, or null if it does not exist.
         /// </returns>
-        private SpreadsheetCell GetSpreadsheetCell(int column, int row)
+        internal SpreadsheetCell GetSpreadsheetCell(int column, int row)
         {
             var key = SpreadsheetCell.GenerateKey(column, row);
 

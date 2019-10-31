@@ -4,6 +4,14 @@
 // Created 2019/10/30 at 00:23
 // ==================================================
 
+#region
+
+using System.Runtime.CompilerServices;
+
+#endregion
+
+[assembly: InternalsVisibleTo("SpreadsheetEngineTester")]
+
 namespace SpreadsheetEngine
 {
     /// <summary>
@@ -23,7 +31,7 @@ namespace SpreadsheetEngine
         public string Key => GenerateKey(this.ColumnIndex, this.RowIndex);
 
         /// <summary>
-        /// Gets or sets Please stop already StyleCop, I'm crying.
+        ///     Gets or sets Please stop already StyleCop, I'm crying.
         /// </summary>
         public new string Value
         {

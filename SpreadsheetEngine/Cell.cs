@@ -4,6 +4,14 @@
 // Created 2019/10/29 at 22:10
 // ==================================================
 
+#region
+
+using System.Runtime.CompilerServices;
+
+#endregion
+
+[assembly: InternalsVisibleTo("SpreadsheetEngineTester")]
+
 namespace SpreadsheetEngine
 {
     #region

@@ -17,6 +17,11 @@ namespace SpreadsheetEngineTester
     #endregion
 
     [SuppressMessage(
+        "StyleCop.CSharp.SpacingRules",
+        "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+        Justification = "Reviewed. Suppression is OK here."
+    )]
+    [SuppressMessage(
         "StyleCop.CSharp.DocumentationRules",
         "SA1600:ElementsMustBeDocumented",
         Justification = "Reviewed. Suppression is OK here."
@@ -24,6 +29,17 @@ namespace SpreadsheetEngineTester
     [TestClass]
     public class SpreadsheetTest
     {
+        [TestMethod]
+        public void EvaluateCell()
+        {
+            var spreadsheet = new Spreadsheet(100, 100);
+
+            spreadsheet.GetSpreadsheetCell(0, 0).Value = "Test";
+            spreadsheet.GetSpreadsheetCell(0, 1).Value = "=A1";
+
+            Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
+        }
+
         [TestMethod]
         public void GetCellLink()
         {
@@ -35,17 +51,6 @@ namespace SpreadsheetEngineTester
             {
                 Assert.AreEqual(spreadsheet.FollowCellLink(match[pos, 0]).Key, match[pos, 1]);
             }
-        }
-
-        [TestMethod]
-        public void EvaluateCell()
-        {
-            var spreadsheet = new Spreadsheet(100, 100);
-
-            spreadsheet.GetSpreadsheetCell(0, 0).Value = "Test";
-            spreadsheet.GetSpreadsheetCell(0, 1).Value = "=A1";
-
-            Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
         }
     }
 }

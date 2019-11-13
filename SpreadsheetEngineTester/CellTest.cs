@@ -17,6 +17,11 @@ namespace SpreadsheetEngineTester
     #endregion
 
     [SuppressMessage(
+        "StyleCop.CSharp.SpacingRules",
+        "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+        Justification = "Reviewed. Suppression is OK here."
+    )]
+    [SuppressMessage(
         "StyleCop.CSharp.DocumentationRules",
         "SA1600:ElementsMustBeDocumented",
         Justification = "Reviewed. Suppression is OK here."

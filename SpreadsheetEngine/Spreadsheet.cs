@@ -152,6 +152,25 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Gets a SpreadsheetCell from the Spreadsheet
+        /// </summary>
+        /// <param name="column">
+        ///     The Cell Column
+        /// </param>
+        /// <param name="row">
+        ///     The Cell Row
+        /// </param>
+        /// <returns>
+        ///     The requested Cell, or null if it does not exist.
+        /// </returns>
+        internal SpreadsheetCell GetSpreadsheetCell(int column, int row)
+        {
+            var key = SpreadsheetCell.GenerateKey(column, row);
+
+            return this.cells.ContainsKey(key) ? (SpreadsheetCell)this.cells[key] : null;
+        }
+
+        /// <summary>
         ///     Converts something like AB to 28.
         /// </summary>
         /// <param name="input">
@@ -212,25 +231,6 @@ namespace SpreadsheetEngine
             var linkedCell = this.FollowCellLink(link);
 
             cell.Text = linkedCell.Text;
-        }
-
-        /// <summary>
-        ///     Gets a SpreadsheetCell from the Spreadsheet
-        /// </summary>
-        /// <param name="column">
-        ///     The Cell Column
-        /// </param>
-        /// <param name="row">
-        ///     The Cell Row
-        /// </param>
-        /// <returns>
-        ///     The requested Cell, or null if it does not exist.
-        /// </returns>
-        internal SpreadsheetCell GetSpreadsheetCell(int column, int row)
-        {
-            var key = SpreadsheetCell.GenerateKey(column, row);
-
-            return this.cells.ContainsKey(key) ? (SpreadsheetCell)this.cells[key] : null;
         }
     }
 }

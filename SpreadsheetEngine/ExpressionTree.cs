@@ -11,6 +11,7 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     #endregion
@@ -45,6 +46,17 @@ namespace SpreadsheetEngine
         public ExpressionTree(string expression)
         {
             this.rawExpression = expression;
+        }
+
+        /// <summary>
+        ///     Adds an ExpressionOperator
+        /// </summary>
+        /// <param name="expressionOperator">
+        ///     Expression Operator
+        /// </param>
+        public static void AddOperator(ExpressionOperator expressionOperator)
+        {
+            OperatorsDictionary.Add(expressionOperator.Token, expressionOperator);
         }
 
         /// <summary>
@@ -118,15 +130,7 @@ namespace SpreadsheetEngine
         {
             var foundVariables = FindVariables(this.rawExpression);
 
-            foreach (var variable in foundVariables)
-            {
-                if (!this.variablesDictionary.ContainsKey(variable))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return foundVariables.All(variable => this.variablesDictionary.ContainsKey(variable));
         }
 
         /// <summary>
@@ -137,8 +141,7 @@ namespace SpreadsheetEngine
         /// </returns>
         internal double ShuntingYardEvaluator()
         {
-            var tokens = new Stack<string>();
-
+            // var tokens = new Stack<string>();
             return 0.0;
         }
     }

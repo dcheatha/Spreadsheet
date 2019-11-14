@@ -8,7 +8,6 @@ namespace SpreadsheetEngineTester
 {
     #region
 
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -52,7 +51,6 @@ namespace SpreadsheetEngineTester
             }
         }
 
-
         [TestMethod]
         public void HasVariables()
         {
@@ -72,29 +70,6 @@ namespace SpreadsheetEngineTester
             tree.SetVariable("Coffee", 1.0);
 
             Assert.IsTrue(tree.HasVariables());
-        }
-
-        [TestMethod]
-        public void ReplaceVariables()
-        {
-            var expression = "A1 + Duck * (FlyingCow061 * MapleTree * A1) + 1";
-
-            var varDictionary = new Dictionary<string, double>
-                                {
-                                    ["A1"] = 1.0, ["Duck"] = 2.0, ["FlyingCow061"] = 9.8, ["MapleTree"] = 412312.34
-                                };
-
-            var tree = new ExpressionTree(expression);
-
-            foreach (var entry in varDictionary)
-            {
-                tree.SetVariable(entry.Key, entry.Value);
-            }
-
-            var result   = tree.ReplaceVariables();
-            var expected = "1.0 + 2.0 * (9.8 * 412312.34 * 1.0) + 1";
-
-            Assert.AreEqual(expected, result);
         }
     }
 }

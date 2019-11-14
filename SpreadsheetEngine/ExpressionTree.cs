@@ -110,7 +110,7 @@ namespace SpreadsheetEngine
         /// </returns>
         internal bool HasVariables()
         {
-            var foundVariables = ExpressionTree.FindVariables(this.rawExpression);
+            var foundVariables = FindVariables(this.rawExpression);
 
             foreach (var variable in foundVariables)
             {
@@ -124,17 +124,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        ///     Replaces variables with their numerical values
-        /// </summary>
-        /// <returns>
-        ///     Expression without any variables
-        /// </returns>
-        internal string ReplaceVariables()
-        {
-            return string.Empty;
-        }
-
-        /// <summary>
         ///     Uses the shunting yard algorithm to evaluate an expression
         /// </summary>
         /// <returns>
@@ -142,6 +131,8 @@ namespace SpreadsheetEngine
         /// </returns>
         internal double ShuntingYardEvaluator()
         {
+            var tokens = new Stack<string>();
+
             return 0.0;
         }
     }

@@ -6,10 +6,13 @@
 
 namespace SpreadsheetEngine
 {
+    /// <summary>
+    ///     Class for evaluating operators
+    /// </summary>
     internal abstract class ExpressionOperator
     {
         /// <summary>
-        ///     Token for operator
+        ///     Gets Token for operator
         /// </summary>
         public string Token { get; } = string.Empty;
 

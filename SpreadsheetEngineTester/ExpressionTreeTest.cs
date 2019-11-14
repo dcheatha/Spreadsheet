@@ -52,6 +52,28 @@ namespace SpreadsheetEngineTester
             }
         }
 
+
+        [TestMethod]
+        public void HasVariables()
+        {
+            var expression = "Apples * Oranges + (PassionFruit / Fruits) + Apples * Coffee";
+
+            string[] variables = { "Apples", "Oranges", "PassionFruit", "Fruits" };
+
+            var tree = new ExpressionTree(expression);
+
+            foreach (var variable in variables)
+            {
+                tree.SetVariable(variable, 1.0);
+            }
+
+            Assert.IsFalse(tree.HasVariables());
+
+            tree.SetVariable("Coffee", 1.0);
+
+            Assert.IsTrue(tree.HasVariables());
+        }
+
         [TestMethod]
         public void ReplaceVariables()
         {

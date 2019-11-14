@@ -28,7 +28,7 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Dictionary to store all of the variables
         /// </summary>
-        private readonly Dictionary<string, double> variablesDictionary;
+        private readonly Dictionary<string, double> variablesDictionary = new Dictionary<string, double>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ExpressionTree" /> class
@@ -110,7 +110,17 @@ namespace SpreadsheetEngine
         /// </returns>
         internal bool HasVariables()
         {
-            return false;
+            var foundVariables = ExpressionTree.FindVariables(this.rawExpression);
+
+            foreach (var variable in foundVariables)
+            {
+                if (!this.variablesDictionary.ContainsKey(variable))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

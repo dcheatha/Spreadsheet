@@ -13,12 +13,12 @@ namespace ExpressionTreeConsoleApp
     #endregion
 
     /// <summary>
-    /// Console app for demoing the ExpressionTree
+    ///     Console app for demoing the ExpressionTree
     /// </summary>
     internal static class Program
     {
         /// <summary>
-        /// Entry point for console app
+        ///     Entry point for console app
         /// </summary>
         private static void Main()
         {

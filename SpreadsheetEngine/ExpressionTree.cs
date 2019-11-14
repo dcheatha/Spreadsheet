@@ -10,11 +10,13 @@ namespace SpreadsheetEngine
 
     using System;
     using System.Collections.Generic;
+    using System.Data;
+    using System.Text.RegularExpressions;
 
     #endregion
 
     /// <summary>
-    /// Class for evaluating arithmetic expressions
+    ///     Class for evaluating arithmetic expressions
     /// </summary>
     internal class ExpressionTree
     {
@@ -29,10 +31,10 @@ namespace SpreadsheetEngine
         private readonly Dictionary<string, double> variablesDictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExpressionTree"/> class
+        ///     Initializes a new instance of the <see cref="ExpressionTree" /> class
         /// </summary>
         /// <param name="expression">
-        /// Expression String
+        ///     Expression String
         /// </param>
         public ExpressionTree(string expression)
         {
@@ -70,42 +72,67 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Uses the shunting yard algorithm to evaluate an expression
+        ///     Finds all variables referenced in the expression
         /// </summary>
+        /// <param name="expression">
+        ///     Expression to work on
+        /// </param>
         /// <returns>
-        /// Expression value
+        ///     All of the found variables
         /// </returns>
-        private double ShuntingYardEvaluator()
+        internal static HashSet<string> FindVariables(string expression)
         {
-            return 0.0;
+            var foundVariables = new HashSet<string>();
+
+            var matcher        = new Regex("[A-Za-z]+[0-9]*");
+            var invalidMatcher = new Regex("[0-9]+[A-Za-z]+");
+
+            if (invalidMatcher.IsMatch(expression))
+            {
+                throw new SyntaxErrorException($"Invalid variable name defined in expression {expression}");
+            }
+
+            var matches = matcher.Matches(expression);
+
+            foreach (Match match in matches)
+            {
+                foundVariables.Add(match.Value);
+            }
+
+            return foundVariables;
         }
 
         /// <summary>
-        /// Replaces variables with their numerical values
+        ///     Checks if all of the variables in the expression are defined
         /// </summary>
-        /// <param name="expression">
-        /// Expression to work on
-        /// </param>
         /// <returns>
-        /// Expression without any variables
+        ///     Truth value
         /// </returns>
-        private string ReplaceVariables(string expression)
+        internal bool HasVariables()
+        {
+            return false;
+        }
+
+        /// <summary>
+        ///     Replaces variables with their numerical values
+        /// </summary>
+        /// <returns>
+        ///     Expression without any variables
+        /// </returns>
+        internal string ReplaceVariables()
         {
             return string.Empty;
         }
 
         /// <summary>
-        /// Finds all variables referenced in the expression
+        ///     Uses the shunting yard algorithm to evaluate an expression
         /// </summary>
-        /// <param name="expression">
-        /// Expression to work on
-        /// </param>
         /// <returns>
-        /// All of the found variables
+        ///     Expression value
         /// </returns>
-        private List<string> FindVariables(string expression)
+        internal double ShuntingYardEvaluator()
         {
-            return null;
+            return 0.0;
         }
     }
 }

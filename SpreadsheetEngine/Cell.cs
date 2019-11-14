@@ -70,11 +70,13 @@ namespace SpreadsheetEngine
             get => this.text;
             set
             {
-                if (value != this.text)
+                if (value == this.text)
                 {
-                    this.text = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("text"));
+                    return;
                 }
+
+                this.text = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("text"));
             }
         }
 

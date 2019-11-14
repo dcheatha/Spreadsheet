@@ -1,15 +1,15 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
-// Add.cs - SpreadsheetEngine
-// Created 2019/11/13 at 16:58
+// Subtract.cs - SpreadsheetEngine
+// Created 2019/11/13 at 17:13
 // ==================================================
 
 namespace SpreadsheetEngine.Operators
 {
     /// <summary>
-    ///     Adding operator
+    ///     Subtraction operator
     /// </summary>
-    internal class OperatorAdd : ExpressionOperator
+    internal class OperatorSubtract : ExpressionOperator
     {
         /// <summary>
         ///     Gets the precedence of the operator
@@ -19,10 +19,10 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets Token for operator
         /// </summary>
-        public new string Token { get; } = "+";
+        public new string Token { get; } = "-";
 
         /// <summary>
-        ///     Evaluates an add expression
+        ///     Evaluates an expression
         /// </summary>
         /// <param name="leftValue">
         ///     Left hand value
@@ -35,7 +35,7 @@ namespace SpreadsheetEngine.Operators
         /// </returns>
         public static new double Evaluate(double leftValue, double rightValue)
         {
-            return leftValue + rightValue;
+            return leftValue - rightValue;
         }
     }
 }

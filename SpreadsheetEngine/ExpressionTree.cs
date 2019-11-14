@@ -21,6 +21,12 @@ namespace SpreadsheetEngine
     internal class ExpressionTree
     {
         /// <summary>
+        ///     Dictionary to store all of the operators
+        /// </summary>
+        private static readonly Dictionary<string, ExpressionOperator> OperatorsDictionary =
+            new Dictionary<string, ExpressionOperator>();
+
+        /// <summary>
         ///     The raw expression string
         /// </summary>
         private readonly string rawExpression;

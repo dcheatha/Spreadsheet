@@ -71,5 +71,20 @@ namespace SpreadsheetEngineTester
 
             Assert.IsTrue(tree.HasVariables());
         }
+
+        [TestMethod]
+        public void Tokenize()
+        {
+            var expression = "0+(App1e @@ 43.23) / 0.15";
+
+            string[] expected = { "0", "+", "(", "App1e", "@@", "43.23", ")", "/", "0.15" };
+
+            var result = ExpressionTree.Tokenize(expression);
+
+            for (var pos = 0; pos < expected.Length; pos++)
+            {
+                Assert.AreEqual(expected[pos], result[pos]);
+            }
+        }
     }
 }

@@ -28,6 +28,11 @@ namespace SpreadsheetEngine
             new Dictionary<string, ExpressionOperator>();
 
         /// <summary>
+        ///     Regex matcher for variable names
+        /// </summary>
+        private static readonly Regex VariableNameMatcher = new Regex("[A-Za-z]+[0-9]*");
+
+        /// <summary>
         ///     The raw expression string
         /// </summary>
         private readonly string rawExpression;
@@ -67,6 +72,9 @@ namespace SpreadsheetEngine
         /// </returns>
         public double Evaluate()
         {
+            var tokens = Tokenize(this.rawExpression);
+
+
             return 0.0;
         }
 
@@ -102,7 +110,6 @@ namespace SpreadsheetEngine
         {
             var foundVariables = new HashSet<string>();
 
-            var matcher        = new Regex("[A-Za-z]+[0-9]*");
             var invalidMatcher = new Regex("[0-9]+[A-Za-z]+");
 
             if (invalidMatcher.IsMatch(expression))
@@ -110,7 +117,7 @@ namespace SpreadsheetEngine
                 throw new SyntaxErrorException($"Invalid variable name defined in expression {expression}");
             }
 
-            var matches = matcher.Matches(expression);
+            var matches = VariableNameMatcher.Matches(expression);
 
             foreach (Match match in matches)
             {
@@ -118,6 +125,31 @@ namespace SpreadsheetEngine
             }
 
             return foundVariables;
+        }
+
+        /// <summary>
+        ///     Splits an expression into tokens
+        /// </summary>
+        /// <param name="expression">
+        ///     Expression string
+        /// </param>
+        /// <returns>
+        ///     Tokenized List
+        /// </returns>
+        internal static List<string> Tokenize(string expression)
+        {
+            var tokens = new List<string>();
+
+            var matcher = new Regex("([a-zA-Z]+[0-9]*[a-zA-Z]*)|(\\d+\\.{0,1}\\d*)|(\\()|(\\))|([^\\(\\)a-zA-Z\\s0-9]+)");
+
+            var matches = matcher.Matches(expression);
+
+            foreach (Match match in matches)
+            {
+                tokens.Add(match.Value.Trim());
+            }
+
+            return tokens;
         }
 
         /// <summary>

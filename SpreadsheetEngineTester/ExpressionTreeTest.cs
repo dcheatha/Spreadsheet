@@ -91,5 +91,16 @@ namespace SpreadsheetEngineTester
                 Assert.AreEqual(expected[pos, 1], result[pos].Item2);
             }
         }
+
+        [TestMethod]
+        public void Evaluate()
+        {
+            var expression = "0+App1e+43.23+0.15";
+            var tree = new ExpressionTree(expression);
+
+            tree.SetVariable("App1e", 5);
+
+            Assert.AreEqual(48.38, tree.Evaluate());
+        }
     }
 }

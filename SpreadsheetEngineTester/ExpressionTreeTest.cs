@@ -77,13 +77,18 @@ namespace SpreadsheetEngineTester
         {
             var expression = "0+(App1e @@ 43.23) / 0.15";
 
-            string[] expected = { "0", "+", "(", "App1e", "@@", "43.23", ")", "/", "0.15" };
+            string[,] expected =
+            {
+                { "0", "number" }, { "+", "symbol" }, { "(", "parenthesisOpen" }, { "App1e", "variable" },
+                { "@@", "symbol" }, { "43.23", "number" }, { ")", "parenthesisClose" }, { "/", "symbol" },
+                { "0.15", "number" }
+            };
 
             var result = ExpressionTree.Tokenize(expression);
-
-            for (var pos = 0; pos < expected.Length; pos++)
+            for (var pos = 0; pos < expected.GetLength(0); pos++)
             {
-                Assert.AreEqual(expected[pos], result[pos]);
+                Assert.AreEqual(expected[pos, 0], result[pos].Item1);
+                Assert.AreEqual(expected[pos, 1], result[pos].Item2);
             }
         }
     }

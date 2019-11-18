@@ -72,8 +72,12 @@ namespace SpreadsheetEngine
         /// </returns>
         public double Evaluate()
         {
+            // For Homework #5, we can ignore parentheses
             var tokens = Tokenize(this.rawExpression);
 
+            foreach (var token in tokens)
+            {
+            }
 
             return 0.0;
         }
@@ -136,17 +140,27 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Tokenized List
         /// </returns>
-        internal static List<string> Tokenize(string expression)
+        internal static List<Tuple<string, string>> Tokenize(string expression)
         {
-            var tokens = new List<string>();
-
-            var matcher = new Regex("([a-zA-Z]+[0-9]*[a-zA-Z]*)|(\\d+\\.{0,1}\\d*)|(\\()|(\\))|([^\\(\\)a-zA-Z\\s0-9]+)");
+            var matcher = new Regex(@"(?<variable>[a-zA-Z]+[0-9]*[a-zA-Z]*)|(?<number>\d+\.{0,1}\d*)|(?<parenthesisOpen>\()|(?<parenthesisClose>\))|(?<symbol>[^\(\)a-zA-Z\\s0-9]+)");
 
             var matches = matcher.Matches(expression);
 
+            var tokens = new List<Tuple<string, string>>();
+
+            // Have to create a list of the group names, because C# seems to order regex groups randomly...
+            string[] groups = { "variable", "number", "parenthesisOpen", "parenthesisClose", "symbol" };
+
             foreach (Match match in matches)
             {
-                tokens.Add(match.Value.Trim());
+                foreach (var groupName in groups)
+                {
+                    var group = match.Groups[groupName];
+                    if (group.Success)
+                    {
+                        tokens.Add(new Tuple<string, string>(group.Value.Trim(), groupName));
+                    }
+                }
             }
 
             return tokens;

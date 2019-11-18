@@ -72,11 +72,25 @@ namespace SpreadsheetEngine
         /// </returns>
         public double Evaluate()
         {
-            // For Homework #5, we can ignore parentheses
+            // For Homework #5, we can ignore parentheses, and we will always have the same symbol.
             var tokens = Tokenize(this.rawExpression);
 
-            foreach (var token in tokens)
+            foreach (var (token, group) in tokens)
             {
+                switch (group)
+                {
+                    case "number":
+
+                        break;
+                    case "symbol":
+                        break;
+                    case "variable":
+                        break;
+                    case "parenthesisOpen":
+                        break;
+                    case "parenthesisClose":
+                        break;
+                }
             }
 
             return 0.0;
@@ -142,7 +156,9 @@ namespace SpreadsheetEngine
         /// </returns>
         internal static List<Tuple<string, string>> Tokenize(string expression)
         {
-            var matcher = new Regex(@"(?<variable>[a-zA-Z]+[0-9]*[a-zA-Z]*)|(?<number>\d+\.{0,1}\d*)|(?<parenthesisOpen>\()|(?<parenthesisClose>\))|(?<symbol>[^\(\)a-zA-Z\\s0-9]+)");
+            var matcher = new Regex(
+                @"(?<variable>[a-zA-Z]+[0-9]*[a-zA-Z]*)|(?<number>\d+\.{0,1}\d*)|(?<parenthesisOpen>\()|(?<parenthesisClose>\))|(?<symbol>[^\(\)a-zA-Z\\s0-9]+)"
+            );
 
             var matches = matcher.Matches(expression);
 

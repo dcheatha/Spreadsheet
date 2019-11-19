@@ -15,13 +15,14 @@ namespace SpreadsheetEngine
     using System.Text.RegularExpressions;
 
     using SpreadsheetEngine.Nodes;
+    using SpreadsheetEngine.Operators;
 
     #endregion
 
     /// <summary>
     ///     Class for evaluating arithmetic expressions
     /// </summary>
-    internal class ExpressionTree
+    public class ExpressionTree
     {
         /// <summary>
         ///     Dictionary to store all of the operators
@@ -61,6 +62,23 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Adds default expression operators (Add, Subtract, Divide, Multiply, and Power)
+        /// </summary>
+        public static void AddDefaultOperators()
+        {
+            ExpressionOperator[] defaultOperators =
+            {
+                new OperatorAdd(), new OperatorDivide(), new OperatorMultiply(), new OperatorPower(),
+                new OperatorSubtract()
+            };
+
+            foreach (var op in defaultOperators)
+            {
+                AddOperator(op);
+            }
+        }
+
+        /// <summary>
         ///     Adds an ExpressionOperator
         /// </summary>
         /// <param name="expressionOperator">
@@ -82,7 +100,10 @@ namespace SpreadsheetEngine
             // For Homework #5, we can ignore parentheses, and we will always have the same symbol.
             var tokens = Tokenize(this.rawExpression);
 
-            this.BuildTree(tokens);
+            if (this.rootNode == null)
+            {
+                this.BuildTree(tokens);
+            }
 
             return this.rootNode.Evaluate();
         }
@@ -104,6 +125,12 @@ namespace SpreadsheetEngine
             }
 
             this.variablesDictionary.Add(variableName, variableValue);
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return this.rawExpression;
         }
 
         /// <summary>
@@ -179,7 +206,7 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Truth value
         /// </returns>
-        internal bool HasVariables()
+        public bool HasVariables()
         {
             var foundVariables = FindVariables(this.rawExpression);
 
@@ -205,9 +232,6 @@ namespace SpreadsheetEngine
         /// <param name="node">
         ///     Expression Tree Node
         /// </param>
-        /// <param name="group">
-        ///     Node type
-        /// </param>
         private void AddNode(ExpressionTreeNode node)
         {
             if (this.rootNode == null)
@@ -226,67 +250,12 @@ namespace SpreadsheetEngine
                 var operatorNode = (ExpressionTreeOperatorNode)node;
 
                 operatorNode.LeftTreeNode = this.rootNode;
-                this.rootNode = operatorNode;
+                this.rootNode             = operatorNode;
 
                 return;
             }
 
-            IterateAndPlaceNode(this.rootNode, node);
-        }
-
-        /// <summary>
-        /// Iterates the tree and place a node
-        /// </summary>
-        /// <param name="topNode">
-        /// Top node to start at
-        /// </param>
-        /// <param name="newNode">
-        /// Node to place
-        /// </param>
-        private void IterateAndPlaceNode(ExpressionTreeNode topNode, ExpressionTreeNode newNode)
-        {
-            var currentNode = topNode;
-
-            while (!currentNode.IsEndNode())
-            {
-                var operatorNode = (ExpressionTreeOperatorNode)currentNode;
-                if (operatorNode.LeftTreeNode == null)
-                {
-                    operatorNode.LeftTreeNode = newNode;
-                    return;
-                }
-
-                if (operatorNode.RightTreeNode == null)
-                {
-                    operatorNode.RightTreeNode = newNode;
-                    return;
-                }
-
-                if (!operatorNode.LeftTreeNode.CanEvaluate())
-                {
-                    currentNode = operatorNode.LeftTreeNode;
-                    continue;
-                }
-
-                if (!operatorNode.RightTreeNode.CanEvaluate())
-                {
-                    currentNode = operatorNode.RightTreeNode;
-                    continue;
-                }
-
-                if (!newNode.IsEndNode())
-                {
-                    var temp = operatorNode.RightTreeNode;
-                    var newOperatorNode = (ExpressionTreeOperatorNode)newNode;
-                    newOperatorNode.LeftTreeNode = temp;
-                    operatorNode.RightTreeNode = newOperatorNode;
-                    return;
-                }
-
-                throw new ArithmeticException();
-            }
-
-            throw new ArithmeticException();
+            this.IterateAndPlaceNode(this.rootNode, node);
         }
 
         /// <summary>
@@ -341,6 +310,61 @@ namespace SpreadsheetEngine
             {
                 this.AddNode(this.BuildNode(token, group));
             }
+        }
+
+        /// <summary>
+        ///     Iterates the tree and place a node
+        /// </summary>
+        /// <param name="topNode">
+        ///     Top node to start at
+        /// </param>
+        /// <param name="newNode">
+        ///     Node to place
+        /// </param>
+        private void IterateAndPlaceNode(ExpressionTreeNode topNode, ExpressionTreeNode newNode)
+        {
+            var currentNode = topNode;
+
+            while (!currentNode.IsEndNode())
+            {
+                var operatorNode = (ExpressionTreeOperatorNode)currentNode;
+                if (operatorNode.LeftTreeNode == null)
+                {
+                    operatorNode.LeftTreeNode = newNode;
+                    return;
+                }
+
+                if (operatorNode.RightTreeNode == null)
+                {
+                    operatorNode.RightTreeNode = newNode;
+                    return;
+                }
+
+                if (!operatorNode.LeftTreeNode.CanEvaluate())
+                {
+                    currentNode = operatorNode.LeftTreeNode;
+                    continue;
+                }
+
+                if (!operatorNode.RightTreeNode.CanEvaluate())
+                {
+                    currentNode = operatorNode.RightTreeNode;
+                    continue;
+                }
+
+                if (!newNode.IsEndNode())
+                {
+                    var temp            = operatorNode.RightTreeNode;
+                    var newOperatorNode = (ExpressionTreeOperatorNode)newNode;
+                    newOperatorNode.LeftTreeNode = temp;
+                    operatorNode.RightTreeNode   = newOperatorNode;
+                    return;
+                }
+
+                throw new ArithmeticException();
+            }
+
+            throw new ArithmeticException();
         }
     }
 }

@@ -8,14 +8,12 @@ namespace SpreadsheetEngine
 {
     #region
 
-    using System;
-
     #endregion
 
     /// <summary>
     ///     Class for evaluating operators
     /// </summary>
-    internal abstract class ExpressionOperator
+    public abstract class ExpressionOperator
     {
         /// <summary>
         ///     Gets the precedence of the operator

@@ -14,6 +14,8 @@ namespace SpreadsheetEngine
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using SpreadsheetEngine.Nodes;
+
     #endregion
 
     /// <summary>
@@ -41,6 +43,11 @@ namespace SpreadsheetEngine
         ///     Dictionary to store all of the variables
         /// </summary>
         private readonly Dictionary<string, double> variablesDictionary = new Dictionary<string, double>();
+
+        /// <summary>
+        ///     Root of the Expression Tree
+        /// </summary>
+        private ExpressionTreeNode rootNode;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ExpressionTree" /> class
@@ -75,25 +82,9 @@ namespace SpreadsheetEngine
             // For Homework #5, we can ignore parentheses, and we will always have the same symbol.
             var tokens = Tokenize(this.rawExpression);
 
-            foreach (var (token, group) in tokens)
-            {
-                switch (group)
-                {
-                    case "number":
+            this.BuildTree(tokens);
 
-                        break;
-                    case "symbol":
-                        break;
-                    case "variable":
-                        break;
-                    case "parenthesisOpen":
-                        break;
-                    case "parenthesisClose":
-                        break;
-                }
-            }
-
-            return 0.0;
+            return this.rootNode.Evaluate();
         }
 
         /// <summary>
@@ -203,8 +194,153 @@ namespace SpreadsheetEngine
         /// </returns>
         internal double ShuntingYardEvaluator()
         {
-            // var tokens = new Stack<string>();
+            var operatorStack = new Stack<ExpressionTreeNode>();
+
             return 0.0;
+        }
+
+        /// <summary>
+        ///     Adds a node to the Expression Tree
+        /// </summary>
+        /// <param name="node">
+        ///     Expression Tree Node
+        /// </param>
+        /// <param name="group">
+        ///     Node type
+        /// </param>
+        private void AddNode(ExpressionTreeNode node)
+        {
+            if (this.rootNode == null)
+            {
+                this.rootNode = node;
+                return;
+            }
+
+            if (this.rootNode.IsEndNode() && node.IsEndNode())
+            {
+                throw new ArithmeticException();
+            }
+
+            if (this.rootNode.IsEndNode() && !node.IsEndNode())
+            {
+                var operatorNode = (ExpressionTreeOperatorNode)node;
+
+                operatorNode.LeftTreeNode = this.rootNode;
+                this.rootNode = operatorNode;
+
+                return;
+            }
+
+            IterateAndPlaceNode(this.rootNode, node);
+        }
+
+        /// <summary>
+        /// Iterates the tree and place a node
+        /// </summary>
+        /// <param name="topNode">
+        /// Top node to start at
+        /// </param>
+        /// <param name="newNode">
+        /// Node to place
+        /// </param>
+        private void IterateAndPlaceNode(ExpressionTreeNode topNode, ExpressionTreeNode newNode)
+        {
+            var currentNode = topNode;
+
+            while (!currentNode.IsEndNode())
+            {
+                var operatorNode = (ExpressionTreeOperatorNode)currentNode;
+                if (operatorNode.LeftTreeNode == null)
+                {
+                    operatorNode.LeftTreeNode = newNode;
+                    return;
+                }
+
+                if (operatorNode.RightTreeNode == null)
+                {
+                    operatorNode.RightTreeNode = newNode;
+                    return;
+                }
+
+                if (!operatorNode.LeftTreeNode.CanEvaluate())
+                {
+                    currentNode = operatorNode.LeftTreeNode;
+                    continue;
+                }
+
+                if (!operatorNode.RightTreeNode.CanEvaluate())
+                {
+                    currentNode = operatorNode.RightTreeNode;
+                    continue;
+                }
+
+                if (!newNode.IsEndNode())
+                {
+                    var temp = operatorNode.RightTreeNode;
+                    var newOperatorNode = (ExpressionTreeOperatorNode)newNode;
+                    newOperatorNode.LeftTreeNode = temp;
+                    operatorNode.RightTreeNode = newOperatorNode;
+                    return;
+                }
+
+                throw new ArithmeticException();
+            }
+
+            throw new ArithmeticException();
+        }
+
+        /// <summary>
+        ///     Builds a new Expression Tree Node
+        /// </summary>
+        /// <param name="token">
+        ///     Token from expression
+        /// </param>
+        /// <param name="group">
+        ///     Expression Group Name
+        /// </param>
+        /// <returns>
+        ///     Expression Tree Node
+        /// </returns>
+        /// <exception cref="NotImplementedException">
+        ///     Group not defined
+        /// </exception>
+        private ExpressionTreeNode BuildNode(string token, string group)
+        {
+            switch (group)
+            {
+                case "variable":
+                    return new ExpressionTreeVariableNode(this.variablesDictionary, token);
+                case "number":
+                    return new ExpressionTreeNumericalNode(double.Parse(token));
+                case "symbol":
+                    return new ExpressionTreeOperatorNode(OperatorsDictionary[token], null, null);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        ///     Builds the Expression Tree in memory
+        /// </summary>
+        /// <param name="tokens">
+        ///     List of tokens
+        /// </param>
+        private void BuildTree(List<Tuple<string, string>> tokens)
+        {
+            if (tokens == null)
+            {
+                throw new ArgumentNullException(nameof(tokens));
+            }
+
+            if (tokens.Count <= 0)
+            {
+                throw new InvalidProgramException();
+            }
+
+            foreach (var (token, group) in tokens)
+            {
+                this.AddNode(this.BuildNode(token, group));
+            }
         }
     }
 }

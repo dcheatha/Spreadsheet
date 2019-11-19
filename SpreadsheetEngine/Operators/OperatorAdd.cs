@@ -1,7 +1,7 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
-// Multiply.cs - SpreadsheetEngine
-// Created 2019/11/13 at 17:15
+// OperatorAdd.cs - SpreadsheetEngine
+// Created 2019/11/13 at 16:58
 // ==================================================
 
 namespace SpreadsheetEngine.Operators
@@ -9,7 +9,7 @@ namespace SpreadsheetEngine.Operators
     /// <summary>
     ///     Adding operator
     /// </summary>
-    internal class OperatorMultiply : ExpressionOperator
+    internal class OperatorAdd : ExpressionOperator
     {
         /// <summary>
         ///     Gets the precedence of the operator
@@ -19,10 +19,10 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets Token for operator
         /// </summary>
-        public new string Token { get; } = "*";
+        public override string Token { get; } = "+";
 
         /// <summary>
-        ///     Evaluates an expression
+        ///     Evaluates an add expression
         /// </summary>
         /// <param name="leftValue">
         ///     Left hand value
@@ -33,9 +33,9 @@ namespace SpreadsheetEngine.Operators
         /// <returns>
         ///     Expression Result
         /// </returns>
-        public static new double Evaluate(double leftValue, double rightValue)
+        public override double Evaluate(double leftValue, double rightValue)
         {
-            return leftValue * rightValue;
+            return leftValue + rightValue;
         }
     }
 }

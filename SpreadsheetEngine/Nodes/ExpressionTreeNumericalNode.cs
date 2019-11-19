@@ -6,15 +6,47 @@
 
 namespace SpreadsheetEngine.Nodes
 {
+    #region
+
+    #endregion
+
     /// <summary>
-    /// Numerical Expression Tree Node
+    ///     Numerical Expression Tree Node
     /// </summary>
     internal class ExpressionTreeNumericalNode : ExpressionTreeNode
     {
+        /// <summary>
+        ///     Value of the node
+        /// </summary>
+        private readonly double value;
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ExpressionTreeNumericalNode" /> class
+        /// </summary>
+        /// <param name="value">
+        ///     Value of the node
+        /// </param>
+        public ExpressionTreeNumericalNode(double value)
+        {
+            this.value = value;
+        }
+
+        /// <inheritdoc />
+        public override bool CanEvaluate()
+        {
+            return true;
+        }
+
         /// <inheritdoc />
         public override double Evaluate()
         {
-            throw new System.NotImplementedException();
+            return this.value;
+        }
+
+        /// <inheritdoc />
+        public override bool IsEndNode()
+        {
+            return true;
         }
     }
 }

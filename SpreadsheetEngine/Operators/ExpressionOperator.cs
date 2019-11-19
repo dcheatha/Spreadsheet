@@ -1,7 +1,7 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // ExpressionOperator.cs - SpreadsheetEngine
-// Created 2019/11/13 at 16:43
+// Created 2019/11/18 at 00:04
 // ==================================================
 
 namespace SpreadsheetEngine
@@ -25,7 +25,7 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Gets Token for operator
         /// </summary>
-        public string Token { get; } = null;
+        public abstract string Token { get; }
 
         /// <summary>
         ///     Evaluates an operator expression
@@ -39,9 +39,6 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Expression Result
         /// </returns>
-        public static double Evaluate(double leftValue, double rightValue)
-        {
-            throw new InvalidOperationException();
-        }
+        public abstract double Evaluate(double leftValue, double rightValue);
     }
 }

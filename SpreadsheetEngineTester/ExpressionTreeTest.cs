@@ -13,6 +13,7 @@ namespace SpreadsheetEngineTester
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpreadsheetEngine;
+    using SpreadsheetEngine.Operators;
 
     #endregion
 
@@ -29,6 +30,19 @@ namespace SpreadsheetEngineTester
     [TestClass]
     public class ExpressionTreeTest
     {
+        [TestMethod]
+        public void Evaluate()
+        {
+            var expression = "0+App1e+43.23+0.15";
+            var tree       = new ExpressionTree(expression);
+
+            ExpressionTree.AddOperator(new OperatorAdd());
+
+            tree.SetVariable("App1e", 5);
+
+            Assert.AreEqual(48.38, tree.Evaluate(), 0.001);
+        }
+
         [TestMethod]
         public void FindVariables()
         {
@@ -90,17 +104,6 @@ namespace SpreadsheetEngineTester
                 Assert.AreEqual(expected[pos, 0], result[pos].Item1);
                 Assert.AreEqual(expected[pos, 1], result[pos].Item2);
             }
-        }
-
-        [TestMethod]
-        public void Evaluate()
-        {
-            var expression = "0+App1e+43.23+0.15";
-            var tree = new ExpressionTree(expression);
-
-            tree.SetVariable("App1e", 5);
-
-            Assert.AreEqual(48.38, tree.Evaluate());
         }
     }
 }

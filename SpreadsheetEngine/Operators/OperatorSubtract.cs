@@ -1,15 +1,15 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
-// Divide.cs - SpreadsheetEngine
-// Created 2019/11/13 at 17:14
+// OperatorSubtract.cs - SpreadsheetEngine
+// Created 2019/11/13 at 17:13
 // ==================================================
 
 namespace SpreadsheetEngine.Operators
 {
     /// <summary>
-    ///     Dividing operator
+    ///     Subtraction operator
     /// </summary>
-    internal class OperatorDivide : ExpressionOperator
+    internal class OperatorSubtract : ExpressionOperator
     {
         /// <summary>
         ///     Gets the precedence of the operator
@@ -19,7 +19,7 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets Token for operator
         /// </summary>
-        public new string Token { get; } = "/";
+        public override string Token { get; } = "-";
 
         /// <summary>
         ///     Evaluates an expression
@@ -33,9 +33,9 @@ namespace SpreadsheetEngine.Operators
         /// <returns>
         ///     Expression Result
         /// </returns>
-        public static new double Evaluate(double leftValue, double rightValue)
+        public override double Evaluate(double leftValue, double rightValue)
         {
-            return leftValue / rightValue;
+            return leftValue - rightValue;
         }
     }
 }

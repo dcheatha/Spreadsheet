@@ -1,21 +1,15 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
-// Power.cs - SpreadsheetEngine
-// Created 2019/11/13 at 17:13
+// OperatorMultiply.cs - SpreadsheetEngine
+// Created 2019/11/13 at 17:15
 // ==================================================
 
 namespace SpreadsheetEngine.Operators
 {
-    #region
-
-    using System;
-
-    #endregion
-
     /// <summary>
-    ///     Power operator
+    ///     Adding operator
     /// </summary>
-    internal class OperatorPower : ExpressionOperator
+    internal class OperatorMultiply : ExpressionOperator
     {
         /// <summary>
         ///     Gets the precedence of the operator
@@ -25,7 +19,7 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets Token for operator
         /// </summary>
-        public new string Token { get; } = "^";
+        public override string Token { get; } = "*";
 
         /// <summary>
         ///     Evaluates an expression
@@ -39,9 +33,9 @@ namespace SpreadsheetEngine.Operators
         /// <returns>
         ///     Expression Result
         /// </returns>
-        public static new double Evaluate(double leftValue, double rightValue)
+        public override double Evaluate(double leftValue, double rightValue)
         {
-            return Math.Pow(leftValue, rightValue);
+            return leftValue * rightValue;
         }
     }
 }

@@ -1,15 +1,21 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
-// Subtract.cs - SpreadsheetEngine
+// OperatorPower.cs - SpreadsheetEngine
 // Created 2019/11/13 at 17:13
 // ==================================================
 
 namespace SpreadsheetEngine.Operators
 {
+    #region
+
+    using System;
+
+    #endregion
+
     /// <summary>
-    ///     Subtraction operator
+    ///     Power operator
     /// </summary>
-    internal class OperatorSubtract : ExpressionOperator
+    internal class OperatorPower : ExpressionOperator
     {
         /// <summary>
         ///     Gets the precedence of the operator
@@ -19,7 +25,7 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets Token for operator
         /// </summary>
-        public new string Token { get; } = "-";
+        public override string Token { get; } = "^";
 
         /// <summary>
         ///     Evaluates an expression
@@ -33,9 +39,9 @@ namespace SpreadsheetEngine.Operators
         /// <returns>
         ///     Expression Result
         /// </returns>
-        public static new double Evaluate(double leftValue, double rightValue)
+        public override double Evaluate(double leftValue, double rightValue)
         {
-            return leftValue - rightValue;
+            return Math.Pow(leftValue, rightValue);
         }
     }
 }

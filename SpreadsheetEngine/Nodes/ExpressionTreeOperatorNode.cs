@@ -1,11 +1,17 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // ExpressionTreeOperatorNode.cs - SpreadsheetEngine
-// Created 2019/11/17 at 23:46
+// Created 2019/11/18 at 23:14
 // ==================================================
 
 namespace SpreadsheetEngine.Nodes
 {
+    #region
+
+    using SpreadsheetEngine.Operators;
+
+    #endregion
+
     #region
 
     #endregion

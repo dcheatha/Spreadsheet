@@ -95,6 +95,7 @@ namespace ExpressionTreeConsoleApp
                         tree                    = new ExpressionTree(expression);
                         break;
                     }
+
                     case 2 when tree != null:
                     {
                         Console.Write("Please enter a variable name: ");
@@ -117,6 +118,7 @@ namespace ExpressionTreeConsoleApp
                         tree.SetVariable(name, value);
                         break;
                     }
+
                     case 3 when tree != null && tree.HasVariables():
                     {
                         Console.Write("Tree value: ");
@@ -125,6 +127,7 @@ namespace ExpressionTreeConsoleApp
                         Console.ForegroundColor = ConsoleColor.White;
                         break;
                     }
+
                     case 3 when tree != null && !tree.HasVariables():
                     {
                         Console.WriteLine("Not all variables are defined");

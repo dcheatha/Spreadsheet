@@ -1,7 +1,7 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // OperatorDivide.cs - SpreadsheetEngine
-// Created 2019/11/13 at 17:14
+// Created 2019/11/18 at 23:14
 // ==================================================
 
 namespace SpreadsheetEngine.Operators
@@ -14,10 +14,10 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets the precedence of the operator
         /// </summary>
-        public new int Precedence { get; } = 0;
+        public new int Precedence { get; } = 2;
 
         /// <summary>
-        ///     Gets Token for operator
+        ///     Gets TokenType for operator
         /// </summary>
         public override string Token { get; } = "/";
 

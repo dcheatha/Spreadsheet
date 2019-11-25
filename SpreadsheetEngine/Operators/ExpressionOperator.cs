@@ -1,10 +1,10 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // ExpressionOperator.cs - SpreadsheetEngine
-// Created 2019/11/18 at 00:04
+// Created 2019/11/18 at 23:14
 // ==================================================
 
-namespace SpreadsheetEngine
+namespace SpreadsheetEngine.Operators
 {
     #region
 
@@ -21,7 +21,7 @@ namespace SpreadsheetEngine
         public int Precedence { get; } = 0;
 
         /// <summary>
-        ///     Gets Token for operator
+        ///     Gets TokenType for operator
         /// </summary>
         public abstract string Token { get; }
 

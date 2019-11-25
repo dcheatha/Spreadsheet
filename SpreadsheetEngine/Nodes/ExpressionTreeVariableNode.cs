@@ -1,7 +1,7 @@
 ﻿// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // ExpressionTreeVariableNode.cs - SpreadsheetEngine
-// Created 2019/11/17 at 23:48
+// Created 2019/11/18 at 23:14
 // ==================================================
 
 namespace SpreadsheetEngine.Nodes

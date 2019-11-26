@@ -8,12 +8,14 @@ namespace SpreadsheetEngineTester
 {
     #region
 
+    using System;
     using System.Diagnostics.CodeAnalysis;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpreadsheetEngine;
     using SpreadsheetEngine.Operators;
+    using static SpreadsheetEngine.ExpressionTree;
 
     #endregion
 
@@ -33,14 +35,14 @@ namespace SpreadsheetEngineTester
         [TestMethod]
         public void Evaluate()
         {
-            var expression = "0+App1e+43.23+0.15";
+            var expression = "1-(App1e*43.23^(0.15))";
             var tree       = new ExpressionTree(expression);
 
-            ExpressionTree.AddOperator(new OperatorAdd());
+            ExpressionTree.AddDefaultOperators();
 
             tree.SetVariable("App1e", 5);
 
-            Assert.AreEqual(48.38, tree.Evaluate(), 0.001);
+            Assert.AreEqual(-7.797, tree.Evaluate(), 0.001);
         }
 
         [TestMethod]
@@ -91,18 +93,24 @@ namespace SpreadsheetEngineTester
         {
             var expression = "0+(App1e @@ 43.23) / 0.15";
 
-            string[,] expected =
+            Tuple<string, TokenType>[] expected =
             {
-                { "0", "number" }, { "+", "symbol" }, { "(", "parenthesisOpen" }, { "App1e", "variable" },
-                { "@@", "symbol" }, { "43.23", "number" }, { ")", "parenthesisClose" }, { "/", "symbol" },
-                { "0.15", "number" }
+                new Tuple<string, TokenType>("0",     TokenType.Number),
+                new Tuple<string, TokenType>("+",     TokenType.Symbol),
+                new Tuple<string, TokenType>("(",     TokenType.ParenthesisOpen),
+                new Tuple<string, TokenType>("App1e", TokenType.Variable),
+                new Tuple<string, TokenType>("@@",    TokenType.Symbol),
+                new Tuple<string, TokenType>("43.23", TokenType.Number),
+                new Tuple<string, TokenType>(")",     TokenType.ParenthesisClose),
+                new Tuple<string, TokenType>("/",     TokenType.Symbol),
+                new Tuple<string, TokenType>("0.15",  TokenType.Number)
             };
 
-            var result = ExpressionTree.Tokenize(expression);
+            var actual = ExpressionTree.Tokenize(expression);
             for (var pos = 0; pos < expected.GetLength(0); pos++)
             {
-                Assert.AreEqual(expected[pos, 0], result[pos].Item1);
-                Assert.AreEqual(expected[pos, 1], result[pos].Item2);
+                Assert.AreEqual(expected[pos].Item1, actual[pos].Item1);
+                Assert.AreEqual(expected[pos].Item2, actual[pos].Item2);
             }
         }
     }

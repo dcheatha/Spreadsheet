@@ -41,7 +41,7 @@ namespace SpreadsheetEngine.Operators
         /// </returns>
         public override double Evaluate(double leftValue, double rightValue)
         {
-            return Math.Pow(leftValue, rightValue);
+            return Math.Pow(rightValue, leftValue);
         }
     }
 }

@@ -8,6 +8,8 @@ namespace SpreadsheetEngine.Nodes
 {
     #region
 
+    using System;
+
     using SpreadsheetEngine.Operators;
 
     #endregion
@@ -72,7 +74,12 @@ namespace SpreadsheetEngine.Nodes
         /// <inheritdoc />
         public override double Evaluate()
         {
-            return this.evaluator.Evaluate(this.LeftTreeNode.Evaluate(), this.RightTreeNode.Evaluate());
+            double leftValue = this.LeftTreeNode.Evaluate();
+            double rightValue = this.RightTreeNode.Evaluate();
+            double evalValue = this.evaluator.Evaluate(leftValue, rightValue);
+            Console.WriteLine($"{evalValue} = {rightValue} {this.evaluator.Token} {leftValue}");
+            return evalValue;
+            // return this.evaluator.Evaluate(this.LeftTreeNode.Evaluate(), this.RightTreeNode.Evaluate());
         }
 
         /// <inheritdoc />

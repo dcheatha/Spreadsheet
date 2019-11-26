@@ -6,6 +6,8 @@
 
 namespace SpreadsheetEngine.Operators
 {
+    using System;
+
     /// <summary>
     ///     Adding operator
     /// </summary>
@@ -35,7 +37,7 @@ namespace SpreadsheetEngine.Operators
         /// </returns>
         public override double Evaluate(double leftValue, double rightValue)
         {
-            return leftValue * rightValue;
+            return rightValue * leftValue;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace SpreadsheetEngine
         public Spreadsheet(int columns, int rows)
         {
             this.ColumnCount = columns;
-            this.RowCount    = rows;
+            this.RowCount = rows;
 
             for (var column = 0; column < this.ColumnCount; column++)
             {
@@ -116,7 +116,7 @@ namespace SpreadsheetEngine
             for (var pos = 0; pos < 50; pos++)
             {
                 var column = rnd.Next(0, this.ColumnCount);
-                var row    = rnd.Next(1, this.RowCount);
+                var row = rnd.Next(1,    this.RowCount);
 
                 var cell = this.GetSpreadsheetCell(column, row);
 
@@ -143,10 +143,10 @@ namespace SpreadsheetEngine
         internal SpreadsheetCell FollowCellLink(string link)
         {
             var columnText = Regex.Replace(link, @"[^A-Z]+", string.Empty);
-            var rowText    = Regex.Replace(link, @"[A-Z]+",  string.Empty);
+            var rowText = Regex.Replace(link,    @"[A-Z]+",  string.Empty);
 
             var column = this.AlphanumericToInteger(columnText);
-            var row    = int.Parse(rowText);
+            var row = int.Parse(rowText);
 
             return this.GetSpreadsheetCell(column, row - 1);
         }
@@ -186,7 +186,7 @@ namespace SpreadsheetEngine
                 return 0;
             }
 
-            var letter   = char.Parse("A");
+            var letter = char.Parse("A");
             var position = input[0] - letter;
 
             if (input.Length == 1)
@@ -227,7 +227,7 @@ namespace SpreadsheetEngine
                 return;
             }
 
-            var link       = cell.Text.Substring(1);
+            var link = cell.Text.Substring(1);
             var linkedCell = this.FollowCellLink(link);
 
             cell.Text = linkedCell.Text;

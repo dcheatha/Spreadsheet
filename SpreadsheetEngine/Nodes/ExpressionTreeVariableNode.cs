@@ -39,7 +39,7 @@ namespace SpreadsheetEngine.Nodes
         public ExpressionTreeVariableNode(Dictionary<string, double> variablesDictionary, string variableName)
         {
             this.variablesDictionary = variablesDictionary;
-            this.variableName        = variableName;
+            this.variableName = variableName;
         }
 
         /// <inheritdoc />
@@ -51,7 +51,9 @@ namespace SpreadsheetEngine.Nodes
         /// <inheritdoc />
         public override double Evaluate()
         {
-            return this.variablesDictionary.ContainsKey(this.variableName) ? this.variablesDictionary[this.variableName] : 0.0;
+            return this.variablesDictionary.ContainsKey(this.variableName)
+                       ? this.variablesDictionary[this.variableName]
+                       : 0.0;
         }
 
         /// <inheritdoc />

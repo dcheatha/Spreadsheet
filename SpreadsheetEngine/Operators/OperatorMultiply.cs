@@ -4,10 +4,28 @@
 // Created 2019/11/18 at 23:14
 // ==================================================
 
+#region a
+
+// ==================================================
+// D. Cheatham (SID: xxxxxxxx)
+// OperatorMultiply.cs - SpreadsheetEngine
+// Created 2019/11/18 at 23:14
+// ==================================================
+
+#endregion
+
+#region a
+
+// ==================================================
+// D. Cheatham (SID: xxxxxxxx)
+// OperatorMultiply.cs - SpreadsheetEngine
+// Created 2019/11/18 at 23:14
+// ==================================================
+
+#endregion
+
 namespace SpreadsheetEngine.Operators
 {
-    using System;
-
     /// <summary>
     ///     Adding operator
     /// </summary>

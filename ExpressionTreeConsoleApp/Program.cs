@@ -92,7 +92,7 @@ namespace ExpressionTreeConsoleApp
                         Console.ForegroundColor = ConsoleColor.Blue;
                         var expression = Console.ReadLine();
                         Console.ForegroundColor = ConsoleColor.White;
-                        tree                    = new ExpressionTree(expression);
+                        tree = new ExpressionTree(expression);
                         break;
                     }
 

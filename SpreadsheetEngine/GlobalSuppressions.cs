@@ -15,6 +15,5 @@ using System.Diagnostics.CodeAnalysis;
         "Style",
         "IDE0060:Remove unused parameter",
         Justification = "<Pending>",
-        Scope         = "member",
-        Target        = "~M:SpreadsheetEngine.ExpressionOperator.Evaluate(System.Double,System.Double)~System.Double"
-    )]
+        Scope = "member",
+        Target = "~M:SpreadsheetEngine.ExpressionOperator.Evaluate(System.Double,System.Double)~System.Double")]

@@ -15,11 +15,18 @@ namespace SpreadsheetEngineTester
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     using SpreadsheetEngine;
-    using SpreadsheetEngine.Operators;
+
     using static SpreadsheetEngine.ExpressionTree;
 
     #endregion
 
+    /// <summary>
+    /// </summary>
+    [SuppressMessage(
+        "StyleCop.CSharp.DocumentationRules",
+        "SA1606:ElementDocumentationMustHaveSummaryText",
+        Justification = "Reviewed. Suppression is OK here."
+    )]
     [SuppressMessage(
         "StyleCop.CSharp.SpacingRules",
         "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
@@ -33,23 +40,29 @@ namespace SpreadsheetEngineTester
     [TestClass]
     public class ExpressionTreeTest
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="context">
+        /// </param>
+        [SuppressMessage(
+            "StyleCop.CSharp.DocumentationRules",
+            "SA1614:ElementParameterDocumentationMustHaveText",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
-            ExpressionTree.AddDefaultOperators();
+            AddDefaultOperators();
         }
 
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void Evaluate()
         {
             string[] expressions =
             {
-                "1+1",
-                "(9)",
-                "1-(9)",
-                "0^0",
-                "1-(App1e*43.23^(0.15))",
-                "(5*3^2)/(1+(54)/23)^0.21",
+                "1+1", "(9)", "1-(9)", "0^0", "1-(App1e*43.23^(0.15))", "(5*3^2)/(1+(54)/23)^0.21",
                 "MagicBeans * Giant"
             };
 
@@ -69,44 +82,19 @@ namespace SpreadsheetEngineTester
             {
                 Assert.AreEqual(expected[pos], trees[pos].Evaluate(), 0.001);
             }
-
         }
 
-        [TestMethod]
-        public void ReversePolishNotation()
-        {
-            var expression = "1+5*3^7";
-
-            Tuple<string, TokenType>[] expectedStrings =
-            {
-                new Tuple<string, TokenType>("1", TokenType.Number), 
-                new Tuple<string, TokenType>("5", TokenType.Number), 
-                new Tuple<string, TokenType>("3", TokenType.Number), 
-                new Tuple<string, TokenType>("7", TokenType.Number), 
-                new Tuple<string, TokenType>("^", TokenType.Symbol), 
-                new Tuple<string, TokenType>("*", TokenType.Symbol), 
-                new Tuple<string, TokenType>("+", TokenType.Symbol), 
-            };
-
-            var rpn = ExpressionTree.ReversePolishNotateTokens(ExpressionTree.Tokenize(expression));
-
-            for (var pos = 0; pos < expectedStrings.Length; pos++)
-            {
-                Assert.AreEqual(expectedStrings[pos].Item1, rpn[pos].Item1);
-                Assert.AreEqual(expectedStrings[pos].Item2, rpn[pos].Item2);
-            }
-        }
-
-
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void FindVariables()
         {
             var expression = "A1 + Duck * (FlyingCow061 * MapleTree) + 1";
-            var found      = ExpressionTree.FindVariables(expression);
+            var found = ExpressionTree.FindVariables(expression);
 
             Assert.IsNotNull(found);
 
-            string[] variables    = { "A1", "Duck", "FlyingCow061", "MapleTree" };
+            string[] variables = { "A1", "Duck", "FlyingCow061", "MapleTree" };
             string[] notVariables = { "(", ")", "*", "+", "1", " " };
 
             foreach (var variable in variables)
@@ -120,6 +108,8 @@ namespace SpreadsheetEngineTester
             }
         }
 
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void HasVariables()
         {
@@ -141,6 +131,35 @@ namespace SpreadsheetEngineTester
             Assert.IsTrue(tree.HasVariables());
         }
 
+        /// <summary>
+        /// </summary>
+        [TestMethod]
+        public void ReversePolishNotation()
+        {
+            var expression = "1+5*3^7";
+
+            Tuple<string, TokenType>[] expectedStrings =
+            {
+                new Tuple<string, TokenType>("1", TokenType.Number),
+                new Tuple<string, TokenType>("5", TokenType.Number),
+                new Tuple<string, TokenType>("3", TokenType.Number),
+                new Tuple<string, TokenType>("7", TokenType.Number),
+                new Tuple<string, TokenType>("^", TokenType.Symbol),
+                new Tuple<string, TokenType>("*", TokenType.Symbol),
+                new Tuple<string, TokenType>("+", TokenType.Symbol)
+            };
+
+            var rpn = ReversePolishNotateTokens(ExpressionTree.Tokenize(expression));
+
+            for (var pos = 0; pos < expectedStrings.Length; pos++)
+            {
+                Assert.AreEqual(expectedStrings[pos].Item1, rpn[pos].Item1);
+                Assert.AreEqual(expectedStrings[pos].Item2, rpn[pos].Item2);
+            }
+        }
+
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void Tokenize()
         {

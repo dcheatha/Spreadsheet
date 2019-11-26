@@ -6,8 +6,6 @@
 
 namespace SpreadsheetEngine.Operators
 {
-    using System;
-
     /// <summary>
     ///     Subtraction operator
     /// </summary>

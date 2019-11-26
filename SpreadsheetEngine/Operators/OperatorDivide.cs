@@ -4,8 +4,6 @@
 // Created 2019/11/18 at 23:14
 // ==================================================
 
-using System;
-
 namespace SpreadsheetEngine.Operators
 {
     /// <summary>

@@ -14,10 +14,6 @@ namespace SpreadsheetEngine.Nodes
 
     #endregion
 
-    #region
-
-    #endregion
-
     /// <summary>
     ///     Operator Expression Tree Node
     /// </summary>
@@ -45,8 +41,8 @@ namespace SpreadsheetEngine.Nodes
             ExpressionTreeNode leftTreeNode,
             ExpressionTreeNode rightTreeNode)
         {
-            this.evaluator     = evaluator;
-            this.LeftTreeNode  = leftTreeNode;
+            this.evaluator = evaluator;
+            this.LeftTreeNode = leftTreeNode;
             this.RightTreeNode = rightTreeNode;
         }
 
@@ -74,11 +70,12 @@ namespace SpreadsheetEngine.Nodes
         /// <inheritdoc />
         public override double Evaluate()
         {
-            double leftValue = this.LeftTreeNode.Evaluate();
-            double rightValue = this.RightTreeNode.Evaluate();
-            double evalValue = this.evaluator.Evaluate(leftValue, rightValue);
+            var leftValue = this.LeftTreeNode.Evaluate();
+            var rightValue = this.RightTreeNode.Evaluate();
+            var evalValue = this.evaluator.Evaluate(leftValue, rightValue);
             Console.WriteLine($"{evalValue} = {rightValue} {this.evaluator.Token} {leftValue}");
             return evalValue;
+
             // return this.evaluator.Evaluate(this.LeftTreeNode.Evaluate(), this.RightTreeNode.Evaluate());
         }
 

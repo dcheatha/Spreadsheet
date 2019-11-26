@@ -6,10 +6,6 @@
 
 namespace SpreadsheetEngine.Nodes
 {
-    #region
-
-    #endregion
-
     /// <summary>
     ///     Numerical Expression Tree Node
     /// </summary>

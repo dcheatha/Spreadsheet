@@ -6,10 +6,6 @@
 
 namespace SpreadsheetEngine.Operators
 {
-    #region
-
-    #endregion
-
     /// <summary>
     ///     Class for evaluating operators
     /// </summary>

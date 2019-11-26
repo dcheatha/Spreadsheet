@@ -41,10 +41,10 @@ namespace SpreadsheetEngine
         /// </param>
         protected Cell(int columnIndex, int rowIndex)
         {
-            this.RowIndex    = rowIndex;
+            this.RowIndex = rowIndex;
             this.ColumnIndex = columnIndex;
-            this.Text        = string.Empty;
-            this.Value       = string.Empty;
+            this.Text = string.Empty;
+            this.Value = string.Empty;
         }
 
         /// <summary>

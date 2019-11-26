@@ -4,6 +4,26 @@
 // Created 2019/10/29 at 21:11
 // ==================================================
 
+#region a
+
+// ==================================================
+// D. Cheatham (SID: xxxxxxxx)
+// SpreadsheetForm.cs - Spreadsheet_D._Cheatham
+// Created 2019/10/29 at 21:11
+// ==================================================
+
+#endregion
+
+#region a
+
+// ==================================================
+// D. Cheatham (SID: xxxxxxxx)
+// SpreadsheetForm.cs - Spreadsheet_D._Cheatham
+// Created 2019/10/29 at 21:11
+// ==================================================
+
+#endregion
+
 namespace Spreadsheet_D._Cheatham
 {
     #region
@@ -35,6 +55,12 @@ namespace Spreadsheet_D._Cheatham
             this.InitializeComponent();
         }
 
+        /// <summary>
+        ///     Makes the process DPI Aware
+        /// </summary>
+        /// <returns>
+        ///     Returns Awesomeness
+        /// </returns>
         [DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
 
@@ -88,7 +114,7 @@ namespace Spreadsheet_D._Cheatham
         private void SpreadsheetLoad(object sender, EventArgs e)
         {
             var columns = 26;
-            var rows    = 50;
+            var rows = 50;
 
             for (var pos = 0; pos < columns; pos++)
             {
@@ -103,7 +129,7 @@ namespace Spreadsheet_D._Cheatham
                 this.mainDataGridView.Rows[pos].HeaderCell.Value = (pos + 1).ToString();
             }
 
-            this.spreadsheet                     =  new Spreadsheet(columns, rows);
+            this.spreadsheet = new Spreadsheet(columns, rows);
             this.spreadsheet.CellPropertyChanged += this.OnEngineCellChange;
 
             this.mainDataGridView.CellValueChanged += this.OnFormCellChange;

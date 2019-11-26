@@ -16,6 +16,13 @@ namespace SpreadsheetEngineTester
 
     #endregion
 
+    /// <summary>
+    /// </summary>
+    [SuppressMessage(
+        "StyleCop.CSharp.DocumentationRules",
+        "SA1606:ElementDocumentationMustHaveSummaryText",
+        Justification = "Reviewed. Suppression is OK here."
+    )]
     [SuppressMessage(
         "StyleCop.CSharp.SpacingRules",
         "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
@@ -29,6 +36,8 @@ namespace SpreadsheetEngineTester
     [TestClass]
     public class SpreadsheetTest
     {
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void EvaluateCell()
         {
@@ -40,6 +49,8 @@ namespace SpreadsheetEngineTester
             Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
         }
 
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void GetCellLink()
         {

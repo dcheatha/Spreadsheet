@@ -16,6 +16,13 @@ namespace SpreadsheetEngineTester
 
     #endregion
 
+    /// <summary>
+    /// </summary>
+    [SuppressMessage(
+        "StyleCop.CSharp.DocumentationRules",
+        "SA1606:ElementDocumentationMustHaveSummaryText",
+        Justification = "Reviewed. Suppression is OK here."
+    )]
     [SuppressMessage(
         "StyleCop.CSharp.SpacingRules",
         "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
@@ -29,6 +36,8 @@ namespace SpreadsheetEngineTester
     [TestClass]
     public class CellTest
     {
+        /// <summary>
+        /// </summary>
         [TestMethod]
         public void PropertyChangedEmitter()
         {

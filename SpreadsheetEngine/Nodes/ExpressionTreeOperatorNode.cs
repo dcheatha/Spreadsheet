@@ -73,7 +73,6 @@ namespace SpreadsheetEngine.Nodes
             var leftValue = this.LeftTreeNode.Evaluate();
             var rightValue = this.RightTreeNode.Evaluate();
             var evalValue = this.evaluator.Evaluate(leftValue, rightValue);
-            Console.WriteLine($"{evalValue} = {rightValue} {this.evaluator.Token} {leftValue}");
             return evalValue;
 
             // return this.evaluator.Evaluate(this.LeftTreeNode.Evaluate(), this.RightTreeNode.Evaluate());

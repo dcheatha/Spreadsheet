@@ -174,7 +174,7 @@ namespace SpreadsheetEngine
                 throw new Exception("variableName must not be empty or null");
             }
 
-            this.variablesDictionary.Add(variableName, variableValue);
+            this.variablesDictionary[variableName] = variableValue;
         }
 
         /// <inheritdoc />
@@ -386,7 +386,7 @@ namespace SpreadsheetEngine
         /// <returns>
         /// RPN operators list
         /// </returns>
-        private static List<Tuple<string, TokenType>> ReversePolishNotateTokens(List<Tuple<string, TokenType>> tokens, int position = 0)
+        internal static List<Tuple<string, TokenType>> ReversePolishNotateTokens(List<Tuple<string, TokenType>> tokens, int position = 0)
         {
             var operators = new Stack<string>();
             var rpn       = new List<Tuple<string, TokenType>>();

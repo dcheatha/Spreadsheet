@@ -18,7 +18,7 @@ namespace SpreadsheetEngine.Operators
         /// <summary>
         ///     Gets the precedence of the operator
         /// </summary>
-        public int Precedence { get; } = 0;
+        public abstract int Precedence { get; }
 
         /// <summary>
         ///     Gets TokenType for operator

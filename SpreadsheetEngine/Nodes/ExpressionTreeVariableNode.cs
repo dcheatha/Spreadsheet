@@ -51,12 +51,7 @@ namespace SpreadsheetEngine.Nodes
         /// <inheritdoc />
         public override double Evaluate()
         {
-            if (this.variablesDictionary.ContainsKey(this.variableName))
-            {
-                return this.variablesDictionary[this.variableName];
-            }
-
-            throw new KeyNotFoundException();
+            return this.variablesDictionary.ContainsKey(this.variableName) ? this.variablesDictionary[this.variableName] : 0.0;
         }
 
         /// <inheritdoc />

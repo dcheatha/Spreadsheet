@@ -17,6 +17,7 @@ namespace SpreadsheetEngine
     #region
 
     using System;
+    using System.Collections.Generic;
 
     #endregion
 
@@ -28,18 +29,19 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Expression Tree
         /// </summary>
-        private readonly ExpressionTree expressionTree = new ExpressionTree(string.Empty);
+        private readonly ExpressionTree expressionTree;
 
         /// <inheritdoc />
-        public SpreadsheetCell(int columnIndex, int rowIndex)
+        public SpreadsheetCell(int columnIndex, int rowIndex, Dictionary<string, double> variablesDictionary)
             : base(columnIndex, rowIndex)
         {
+            this.expressionTree = new ExpressionTree(string.Empty, variablesDictionary);
         }
 
         /// <summary>
         ///     Gets the Key of the Cell used to store it in the map
         /// </summary>
-        public Tuple<int, int> Key => GenerateKey(this.ColumnIndex, this.RowIndex);
+        public string Key => GenerateKey(this.ColumnIndex, this.RowIndex);
 
         /// <summary>
         ///     Gets or sets Please stop already StyleCop, I'm crying.
@@ -49,11 +51,18 @@ namespace SpreadsheetEngine
             get => base.Value;
             set
             {
+                if (value == string.Empty)
+                {
+                    base.Value = string.Empty;
+                }
+
                 if (value.StartsWith("="))
                 {
                     this.expressionTree.SetExpression(value.Substring(1));
-                    base.Text = this.expressionTree.Evaluate().ToString("G");
+                    var expressionValue = this.expressionTree.Evaluate();
+                    this.Text = expressionValue.ToString("G");
                     base.Value = value;
+                    this.expressionTree.SetVariable(this.Key, expressionValue);
                 }
                 else
                 {
@@ -74,9 +83,9 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Dictionary Key
         /// </returns>
-        public static Tuple<int, int> GenerateKey(int column, int row)
+        public static string GenerateKey(int column, int row)
         {
-            return new Tuple<int, int>(column, row);
+            return $"{Spreadsheet.IntegerToAlphanumeric(ref column)}{row + 1}";
         }
     }
 }

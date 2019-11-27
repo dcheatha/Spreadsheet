@@ -33,9 +33,14 @@ namespace SpreadsheetEngine
     public class Spreadsheet
     {
         /// <summary>
-        ///     Dictionary of cells in column:row format
+        ///     Dictionary of cells, in A1, A2, B3, etc format
         /// </summary>
-        private readonly Dictionary<Tuple<int, int>, Cell> cells = new Dictionary<Tuple<int, int>, Cell>();
+        private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
+
+        /// <summary>
+        /// Dictionary shared among all cells' expression trees
+        /// </summary>
+        private readonly Dictionary<string, double> variablesDictionary = new Dictionary<string, double>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Spreadsheet" /> class.
@@ -51,13 +56,12 @@ namespace SpreadsheetEngine
             this.ColumnCount = columns;
             this.RowCount = rows;
 
-            ExpressionTree.AddDefaultOperators();
 
             for (var column = 0; column < this.ColumnCount; column++)
             {
                 for (var row = 0; row < this.RowCount; row++)
                 {
-                    var newCell = new SpreadsheetCell(column, row);
+                    var newCell = new SpreadsheetCell(column, row, this.variablesDictionary);
                     newCell.PropertyChanged += this.CellChange;
                     this.cells.Add(newCell.Key, newCell);
                 }
@@ -141,13 +145,16 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        ///     Request to change cell value
+        /// Request to change cell value
         /// </summary>
-        /// <param name="key">
-        ///     Key of cell
+        /// <param name="column">
+        /// Column number
+        /// </param>
+        /// <param name="row">
+        /// Row number
         /// </param>
         /// <param name="value">
-        ///     Value of cell
+        /// Value of cell
         /// </param>
         public void CellChangeRequest(int column, int row, string value)
         {
@@ -228,8 +235,13 @@ namespace SpreadsheetEngine
         /// <param name="e">
         ///     The event fired with it.
         /// </param>
-        private void CellChange(object cell, EventArgs e)
+        private void CellChange(object cell, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName != "text")
+            {
+                return;
+            }
+
             var c = (SpreadsheetCell)cell;
             this.EvaluateCell(c);
             this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.ToString()));

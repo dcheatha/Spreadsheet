@@ -8,6 +8,7 @@ namespace SpreadsheetEngineTester
 {
     #region
 
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -41,7 +42,7 @@ namespace SpreadsheetEngineTester
         [TestMethod]
         public void PropertyChangedEmitter()
         {
-            var cell = new SpreadsheetCell(0, 0);
+            var cell = new SpreadsheetCell(0, 0, new Dictionary<string, double>());
 
             var passing = false;
 

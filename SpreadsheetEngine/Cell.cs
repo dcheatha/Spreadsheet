@@ -31,6 +31,11 @@ namespace SpreadsheetEngine
         private string text;
 
         /// <summary>
+        /// Value equation
+        /// </summary>
+        private string equation;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
         /// </summary>
         /// <param name="columnIndex">
@@ -81,8 +86,16 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        ///     Gets or sets value of the cell
+        ///     Gets or sets equation of the cell
         /// </summary>
-        public string Value { get; protected set; }
+        public string Value
+        {
+            get => this.equation;
+            protected set
+            {
+                this.equation = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("equation"));
+            }
+        }
     }
 }

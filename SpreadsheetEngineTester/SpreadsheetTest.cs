@@ -63,7 +63,7 @@ namespace SpreadsheetEngineTester
         {
             var spreadsheet = new Spreadsheet(100, 100);
 
-            spreadsheet.GetSpreadsheetCell(0, 0).Value = "Test";
+            spreadsheet.GetSpreadsheetCell(0, 0).Value = "=(1+2)^3";
             spreadsheet.GetSpreadsheetCell(0, 1).Value = "=A1";
 
             Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
@@ -76,11 +76,11 @@ namespace SpreadsheetEngineTester
         {
             var spreadsheet = new Spreadsheet(100, 100);
 
-            string[,] match = { { "A1", "0:0" }, { "B2", "1:1" }, { "Z100", "25:99" } };
+            string[] checks = { "A1", "B5", "Z100" };
 
-            for (var pos = 0; pos < match.GetLength(0); pos++)
+            for (var pos = 0; pos < checks.GetLength(0); pos++)
             {
-                Assert.AreEqual(match[pos, 1], spreadsheet.FollowCellLink(match[pos, 0]).Key);
+                Assert.AreEqual(checks[pos], spreadsheet.FollowCellLink(checks[pos]).Key);
             }
         }
     }

@@ -11,6 +11,8 @@ namespace Spreadsheet_D._Cheatham
     using System;
     using System.Windows.Forms;
 
+    using SpreadsheetEngine;
+
     #endregion
 
     /// <summary>
@@ -24,6 +26,7 @@ namespace Spreadsheet_D._Cheatham
         [STAThread]
         private static void Main()
         {
+            ExpressionTree.AddDefaultOperators();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new SpreadsheetForm());

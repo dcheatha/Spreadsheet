@@ -21,6 +21,7 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     #endregion
@@ -206,6 +207,32 @@ namespace SpreadsheetEngine
 
             return result;
         }
+
+        /// <summary>
+        /// Converts something like AAA to 703
+        /// </summary>
+        /// <param name="input">
+        /// Integer value
+        /// </param>
+        /// <returns>
+        /// Alphanumeric value
+        /// </returns>
+        internal static string IntegerToAlphanumeric(ref int input)
+        {
+            var result = string.Empty;
+            var value = input;
+
+            do
+            {
+                value -= 1;
+                result = (char)((int)'A' + (value % 26)) + result;
+                value /= 26;
+            }
+            while (value > 0);
+
+            return result;
+        }
+
 
         /// <summary>
         ///     Helper function to listen to Cell events.

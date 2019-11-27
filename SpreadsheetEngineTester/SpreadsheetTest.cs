@@ -51,7 +51,7 @@ namespace SpreadsheetEngineTester
         }
 
         [TestMethod]
-        public void Base27Conversions()
+        public void Base26Conversions()
         {
             Tuple<int, string>[] expected =
             {
@@ -61,12 +61,15 @@ namespace SpreadsheetEngineTester
                 new Tuple<int, string>(27, "AA"), 
                 new Tuple<int, string>(702, "ZZ"), 
                 new Tuple<int, string>(703, "AAA"), 
+                new Tuple<int, string>(5346, "GWP"), 
             };
 
             for (var pos = 0; pos < expected.Length; pos++)
             {
                 var (input, output) = expected[pos];
                 Assert.AreEqual(input, Spreadsheet.AlphanumericToInteger(ref output));
+
+                Assert.AreEqual(output, Spreadsheet.IntegerToAlphanumeric(ref input));
             }
         }
 

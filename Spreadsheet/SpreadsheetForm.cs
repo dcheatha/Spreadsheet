@@ -95,14 +95,6 @@ namespace Spreadsheet_D._Cheatham
         }
 
         /// <summary>
-        ///     Runs when Demo button is clicked
-        /// </summary>
-        private void RunDemoButtonClick()
-        {
-            this.spreadsheet.RunDemo();
-        }
-
-        /// <summary>
         ///     Loads the spreadsheet
         /// </summary>
         /// <param name="sender">
@@ -113,13 +105,12 @@ namespace Spreadsheet_D._Cheatham
         /// </param>
         private void SpreadsheetLoad(object sender, EventArgs e)
         {
-            var columns = 26;
-            var rows = 50;
+            var columns = 50;
+            var rows = 150;
 
-            for (var pos = 0; pos < columns; pos++)
+            for (var pos = 1; pos < columns + 1; pos++)
             {
-                var letter = char.Parse("A");
-                this.mainDataGridView.Columns.Add(pos.ToString(), ((char)(letter + pos)).ToString());
+                this.mainDataGridView.Columns.Add(pos.ToString(), Spreadsheet.IntegerToAlphanumeric(ref pos));
             }
 
             this.mainDataGridView.Rows.Add(rows);
@@ -133,11 +124,6 @@ namespace Spreadsheet_D._Cheatham
             this.spreadsheet.CellPropertyChanged += this.OnEngineCellChange;
 
             this.mainDataGridView.CellValueChanged += this.OnFormCellChange;
-        }
-
-        private void TextBox1_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

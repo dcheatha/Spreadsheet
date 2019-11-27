@@ -21,8 +21,8 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Linq;
     using System.Text.RegularExpressions;
+    using System.Xml.Schema;
 
     #endregion
 
@@ -79,6 +79,67 @@ namespace SpreadsheetEngine
         public int RowCount { get; }
 
         /// <summary>
+        ///     Converts something like AB to 28.
+        /// </summary>
+        /// <param name="input">
+        ///     Input string
+        /// </param>
+        /// <returns>
+        ///     Integer value
+        /// </returns>
+        public static int AlphanumericToInteger(ref string input)
+        {
+            if (input.Length == 0)
+            {
+                return 0;
+            }
+
+            /*
+                So, we know that an alphanumeric representation of a cell assume the following established form:
+                AAA = 26^2*z + 26*y + x
+                Where x, y, and z are the character code respectively, and the characters follow the collation of base 26.
+                So, we can just use base 27 and replace the digits with the ones we'd like:
+            */
+
+            var alphabetStart = 'A';
+            var result = 0;
+
+            for (var pos = 0; pos < input.Length; pos++)
+            {
+                var currentDigit = input[pos] - alphabetStart + 1;
+
+                result += (int)Math.Pow(26, input.Length - pos - 1) * currentDigit;
+            }
+
+            return result - 1;
+        }
+
+        /// <summary>
+        ///     Converts something like AAA to 703
+        /// </summary>
+        /// <param name="input">
+        ///     Integer value
+        /// </param>
+        /// <returns>
+        ///     Alphanumeric value
+        /// </returns>
+        public static string IntegerToAlphanumeric(ref int input)
+        {
+            var result = string.Empty;
+            var value = input + 1;
+
+            do
+            {
+                value--;
+                result = (char)('A' + (value % 26)) + result;
+                value /= 26;
+            }
+            while (value > 0);
+
+            return result;
+        }
+
+        /// <summary>
         ///     Gets a Cell from the Spreadsheet
         /// </summary>
         /// <param name="column">
@@ -95,41 +156,6 @@ namespace SpreadsheetEngine
             var key = SpreadsheetCell.GenerateKey(column, row);
 
             return this.cells.ContainsKey(key) ? this.cells[key] : null;
-        }
-
-        /// <summary>
-        ///     Runs the demo requested
-        /// </summary>
-        public void RunDemo()
-        {
-            var rnd = new Random();
-
-            for (var pos = 0; pos < this.RowCount; pos++)
-            {
-                var beeCell = this.GetSpreadsheetCell(1, pos);
-                beeCell.Text = $"This is cell B{pos + 1}!";
-
-                var ahhCell = this.GetSpreadsheetCell(0, pos);
-                ahhCell.Text = $"=B{pos + 1}";
-            }
-
-            // I know this can cause an inf loop, but it's just a demo...
-            for (var pos = 0; pos < 50; pos++)
-            {
-                var column = rnd.Next(0, this.ColumnCount);
-                var row = rnd.Next(1,    this.RowCount);
-
-                var cell = this.GetSpreadsheetCell(column, row);
-
-                if (cell.Text != string.Empty)
-                {
-                    pos--;
-                }
-                else
-                {
-                    cell.Text = "Random!";
-                }
-            }
         }
 
         /// <summary>
@@ -170,69 +196,6 @@ namespace SpreadsheetEngine
 
             return this.cells.ContainsKey(key) ? (SpreadsheetCell)this.cells[key] : null;
         }
-
-        /// <summary>
-        ///     Converts something like AB to 28.
-        /// </summary>
-        /// <param name="input">
-        ///     Input string
-        /// </param>
-        /// <returns>
-        ///     Integer value
-        /// </returns>
-        internal static int AlphanumericToInteger(ref string input)
-        {
-            if (input.Length == 0)
-            {
-                return 0;
-            }
-
-            /*
-                So, we know that an alphanumeric representation of a cell assume the following established form:
-                AAA = 26^2*z + 26*y + x
-                Where x, y, and z are the character code respectively, and the characters follow the collation of base 26.
-                So, we can just use base 27 and replace the digits with the ones we'd like:
-            */
-
-            char alphabetStart = 'A';
-            int result = 0;
-
-            for (var pos = 0; pos < input.Length; pos++)
-            {
-                var currentDigit = (int)input[pos] - alphabetStart + 1;
-
-                result += (int)Math.Pow(26, input.Length - pos - 1) * currentDigit;
-            }
-
-
-            return result;
-        }
-
-        /// <summary>
-        /// Converts something like AAA to 703
-        /// </summary>
-        /// <param name="input">
-        /// Integer value
-        /// </param>
-        /// <returns>
-        /// Alphanumeric value
-        /// </returns>
-        internal static string IntegerToAlphanumeric(ref int input)
-        {
-            var result = string.Empty;
-            var value = input;
-
-            do
-            {
-                value -= 1;
-                result = (char)((int)'A' + (value % 26)) + result;
-                value /= 26;
-            }
-            while (value > 0);
-
-            return result;
-        }
-
 
         /// <summary>
         ///     Helper function to listen to Cell events.

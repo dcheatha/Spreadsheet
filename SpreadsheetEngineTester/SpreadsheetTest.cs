@@ -37,6 +37,25 @@ namespace SpreadsheetEngineTester
     [TestClass]
     public class SpreadsheetTest
     {
+        [TestMethod]
+        public void Base26Conversions()
+        {
+            Tuple<int, string>[] expected =
+            {
+                new Tuple<int, string>(0,   "A"), new Tuple<int, string>(25,     "Z"), new Tuple<int, string>(78, "CA"),
+                new Tuple<int, string>(26,  "AA"), new Tuple<int, string>(701,   "ZZ"),
+                new Tuple<int, string>(702, "AAA"), new Tuple<int, string>(5345, "GWP")
+            };
+
+            for (var pos = 0; pos < expected.Length; pos++)
+            {
+                var (input, output) = expected[pos];
+                Assert.AreEqual(input, Spreadsheet.AlphanumericToInteger(ref output));
+
+                Assert.AreEqual(output, Spreadsheet.IntegerToAlphanumeric(ref input));
+            }
+        }
+
         /// <summary>
         /// </summary>
         [TestMethod]
@@ -50,30 +69,6 @@ namespace SpreadsheetEngineTester
             Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
         }
 
-        [TestMethod]
-        public void Base26Conversions()
-        {
-            Tuple<int, string>[] expected =
-            {
-                new Tuple<int, string>(1, "A"), 
-                new Tuple<int, string>(26, "Z"), 
-                new Tuple<int, string>(79, "CA"), 
-                new Tuple<int, string>(27, "AA"), 
-                new Tuple<int, string>(702, "ZZ"), 
-                new Tuple<int, string>(703, "AAA"), 
-                new Tuple<int, string>(5346, "GWP"), 
-            };
-
-            for (var pos = 0; pos < expected.Length; pos++)
-            {
-                var (input, output) = expected[pos];
-                Assert.AreEqual(input, Spreadsheet.AlphanumericToInteger(ref output));
-
-                Assert.AreEqual(output, Spreadsheet.IntegerToAlphanumeric(ref input));
-            }
-        }
-
-
         /// <summary>
         /// </summary>
         [TestMethod]
@@ -85,7 +80,7 @@ namespace SpreadsheetEngineTester
 
             for (var pos = 0; pos < match.GetLength(0); pos++)
             {
-                Assert.AreEqual(spreadsheet.FollowCellLink(match[pos, 0]).Key, match[pos, 1]);
+                Assert.AreEqual(match[pos, 1], spreadsheet.FollowCellLink(match[pos, 0]).Key);
             }
         }
     }

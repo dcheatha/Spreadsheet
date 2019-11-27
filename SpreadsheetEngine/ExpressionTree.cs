@@ -54,14 +54,14 @@ namespace SpreadsheetEngine
         private static readonly Regex VariableNameMatcher = new Regex("[A-Za-z]+[0-9]*");
 
         /// <summary>
-        ///     The raw expression string
-        /// </summary>
-        private readonly string rawExpression;
-
-        /// <summary>
         ///     Dictionary to store all of the variables
         /// </summary>
         private readonly Dictionary<string, double> variablesDictionary;
+
+        /// <summary>
+        ///     The raw expression string
+        /// </summary>
+        private string rawExpression;
 
         /// <summary>
         ///     Root of the Expression Tree
@@ -180,6 +180,17 @@ namespace SpreadsheetEngine
             var foundVariables = FindVariables(this.rawExpression);
 
             return foundVariables.All(variable => this.variablesDictionary.ContainsKey(variable));
+        }
+
+        /// <summary>
+        ///     Sets the Expression
+        /// </summary>
+        /// <param name="expression">
+        ///     Expression to use
+        /// </param>
+        public void SetExpression(string expression)
+        {
+            this.rawExpression = expression;
         }
 
         /// <summary>

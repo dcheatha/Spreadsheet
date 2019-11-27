@@ -91,7 +91,12 @@ namespace Spreadsheet_D._Cheatham
         /// </param>
         private void OnFormCellChange(object sender, DataGridViewCellEventArgs e)
         {
-            Console.WriteLine($@"FormCell changed {e.ColumnIndex}:{e.RowIndex}");
+            var columnIndex = e.ColumnIndex;
+            var rowIndex = e.RowIndex;
+
+            var value = (string)this.mainDataGridView.Rows[rowIndex].Cells[columnIndex].Value;
+
+            this.spreadsheet.CellChangeRequest(columnIndex, rowIndex, value);
         }
 
         /// <summary>

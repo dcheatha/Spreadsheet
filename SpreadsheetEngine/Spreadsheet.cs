@@ -22,7 +22,6 @@ namespace SpreadsheetEngine
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Text.RegularExpressions;
-    using System.Xml.Schema;
 
     #endregion
 
@@ -36,7 +35,7 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Dictionary of cells in column:row format
         /// </summary>
-        private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
+        private readonly Dictionary<Tuple<int, int>, Cell> cells = new Dictionary<Tuple<int, int>, Cell>();
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Spreadsheet" /> class.
@@ -51,6 +50,8 @@ namespace SpreadsheetEngine
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
+
+            ExpressionTree.AddDefaultOperators();
 
             for (var column = 0; column < this.ColumnCount; column++)
             {
@@ -131,12 +132,33 @@ namespace SpreadsheetEngine
             do
             {
                 value--;
-                result = (char)('A' + (value % 26)) + result;
+                result = (char)('A' + value % 26) + result;
                 value /= 26;
             }
             while (value > 0);
 
             return result;
+        }
+
+        /// <summary>
+        ///     Request to change cell value
+        /// </summary>
+        /// <param name="key">
+        ///     Key of cell
+        /// </param>
+        /// <param name="value">
+        ///     Value of cell
+        /// </param>
+        public void CellChangeRequest(int column, int row, string value)
+        {
+            var cell = this.GetSpreadsheetCell(column, row);
+
+            if (cell == null)
+            {
+                return;
+            }
+
+            cell.Value = value;
         }
 
         /// <summary>

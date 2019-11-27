@@ -61,7 +61,7 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Dictionary to store all of the variables
         /// </summary>
-        private readonly Dictionary<string, double> variablesDictionary = new Dictionary<string, double>();
+        private readonly Dictionary<string, double> variablesDictionary;
 
         /// <summary>
         ///     Root of the Expression Tree
@@ -75,8 +75,23 @@ namespace SpreadsheetEngine
         ///     Expression String
         /// </param>
         public ExpressionTree(string expression)
+            : this(expression, new Dictionary<string, double>())
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ExpressionTree" /> class
+        /// </summary>
+        /// <param name="expression">
+        ///     Expression String
+        /// </param>
+        /// <param name="variables">
+        ///     Dictionary of Variables
+        /// </param>
+        public ExpressionTree(string expression, Dictionary<string, double> variables)
         {
             this.rawExpression = expression;
+            this.variablesDictionary = variables;
         }
 
         /// <summary>

@@ -145,7 +145,7 @@ namespace SpreadsheetEngine
             var columnText = Regex.Replace(link, @"[^A-Z]+", string.Empty);
             var rowText = Regex.Replace(link,    @"[A-Z]+",  string.Empty);
 
-            var column = this.AlphanumericToInteger(columnText);
+            var column = AlphanumericToInteger(ref columnText);
             var row = int.Parse(rowText);
 
             return this.GetSpreadsheetCell(column, row - 1);
@@ -179,22 +179,32 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Integer value
         /// </returns>
-        private int AlphanumericToInteger(string input)
+        internal static int AlphanumericToInteger(ref string input)
         {
             if (input.Length == 0)
             {
                 return 0;
             }
 
-            var letter = char.Parse("A");
-            var position = input[0] - letter;
+            /*
+                So, we know that an alphanumeric representation of a cell assume the following established form:
+                AAA = 26^2*z + 26*y + x
+                Where x, y, and z are the character code respectively, and the characters follow the collation of base 26.
+                So, we can just use base 27 and replace the digits with the ones we'd like:
+            */
 
-            if (input.Length == 1)
+            char alphabetStart = 'A';
+            int result = 0;
+
+            for (var pos = 0; pos < input.Length; pos++)
             {
-                return position;
+                var currentDigit = (int)input[pos] - alphabetStart + 1;
+
+                result += (int)Math.Pow(26, input.Length - pos - 1) * currentDigit;
             }
 
-            return position + this.AlphanumericToInteger(input.Substring(1));
+
+            return result;
         }
 
         /// <summary>

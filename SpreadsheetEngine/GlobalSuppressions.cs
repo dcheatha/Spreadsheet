@@ -6,14 +6,5 @@
 
 #region
 
-using System.Diagnostics.CodeAnalysis;
 
 #endregion
-
-[assembly:
-    SuppressMessage(
-        "Style",
-        "IDE0060:Remove unused parameter",
-        Justification = "<Pending>",
-        Scope = "member",
-        Target = "~M:SpreadsheetEngine.ExpressionOperator.Evaluate(System.Double,System.Double)~System.Double")]

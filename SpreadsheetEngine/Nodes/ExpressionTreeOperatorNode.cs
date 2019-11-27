@@ -8,8 +8,6 @@ namespace SpreadsheetEngine.Nodes
 {
     #region
 
-    using System;
-
     using SpreadsheetEngine.Operators;
 
     #endregion

@@ -8,6 +8,7 @@ namespace SpreadsheetEngineTester
 {
     #region
 
+    using System;
     using System.Diagnostics.CodeAnalysis;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -48,6 +49,27 @@ namespace SpreadsheetEngineTester
 
             Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
         }
+
+        [TestMethod]
+        public void Base27Conversions()
+        {
+            Tuple<int, string>[] expected =
+            {
+                new Tuple<int, string>(1, "A"), 
+                new Tuple<int, string>(26, "Z"), 
+                new Tuple<int, string>(79, "CA"), 
+                new Tuple<int, string>(27, "AA"), 
+                new Tuple<int, string>(702, "ZZ"), 
+                new Tuple<int, string>(703, "AAA"), 
+            };
+
+            for (var pos = 0; pos < expected.Length; pos++)
+            {
+                var (input, output) = expected[pos];
+                Assert.AreEqual(input, Spreadsheet.AlphanumericToInteger(ref output));
+            }
+        }
+
 
         /// <summary>
         /// </summary>

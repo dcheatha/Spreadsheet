@@ -134,5 +134,10 @@ namespace Spreadsheet_D._Cheatham
 
             this.mainDataGridView.CellValueChanged += this.OnFormCellChange;
         }
+
+        private void TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -28,9 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.mainDataGridView = new System.Windows.Forms.DataGridView();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.formulaBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.mainDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -40,18 +39,21 @@
             this.mainDataGridView.AllowUserToDeleteRows = false;
             this.mainDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.mainDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mainDataGridView.Location = new System.Drawing.Point(0, 0);
+            this.mainDataGridView.Location = new System.Drawing.Point(0, 29);
             this.mainDataGridView.Name = "mainDataGridView";
             this.mainDataGridView.RowHeadersWidth = 72;
             this.mainDataGridView.RowTemplate.Height = 31;
-            this.mainDataGridView.Size = new System.Drawing.Size(800, 450);
+            this.mainDataGridView.Size = new System.Drawing.Size(800, 421);
             this.mainDataGridView.TabIndex = 0;
             // 
-            // contextMenuStrip1
+            // formulaBox
             // 
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            this.formulaBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.formulaBox.Enabled = false;
+            this.formulaBox.Location = new System.Drawing.Point(0, 0);
+            this.formulaBox.Name = "formulaBox";
+            this.formulaBox.Size = new System.Drawing.Size(800, 29);
+            this.formulaBox.TabIndex = 1;
             // 
             // SpreadsheetForm
             // 
@@ -59,18 +61,20 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.mainDataGridView);
+            this.Controls.Add(this.formulaBox);
             this.Name = "SpreadsheetForm";
             this.Text = "Totally Modern Spreadsheet Application";
             this.Load += new System.EventHandler(this.SpreadsheetLoad);
             ((System.ComponentModel.ISupportInitialize)(this.mainDataGridView)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.DataGridView mainDataGridView;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.TextBox formulaBox;
     }
 }
 

@@ -4,26 +4,6 @@
 // Created 2019/10/29 at 21:11
 // ==================================================
 
-#region a
-
-// ==================================================
-// D. Cheatham (SID: xxxxxxxx)
-// SpreadsheetForm.cs - Spreadsheet_D._Cheatham
-// Created 2019/10/29 at 21:11
-// ==================================================
-
-#endregion
-
-#region a
-
-// ==================================================
-// D. Cheatham (SID: xxxxxxxx)
-// SpreadsheetForm.cs - Spreadsheet_D._Cheatham
-// Created 2019/10/29 at 21:11
-// ==================================================
-
-#endregion
-
 namespace Spreadsheet_D._Cheatham
 {
     #region
@@ -100,6 +80,22 @@ namespace Spreadsheet_D._Cheatham
         }
 
         /// <summary>
+        /// Fired when a cell is selected
+        /// </summary>
+        /// <param name="sender">
+        /// The form
+        /// </param>
+        /// <param name="e">
+        ///     Event parameters
+        /// </param>
+        private void OnCellSelect(object sender, EventArgs e)
+        {
+            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
+            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
+            this.formulaBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
+        }
+
+        /// <summary>
         ///     Loads the spreadsheet
         /// </summary>
         /// <param name="sender">
@@ -113,7 +109,7 @@ namespace Spreadsheet_D._Cheatham
             var columns = 50;
             var rows = 150;
 
-            for (var pos = 1; pos < columns + 1; pos++)
+            for (var pos = 0; pos < columns; pos++)
             {
                 this.mainDataGridView.Columns.Add(pos.ToString(), Spreadsheet.IntegerToAlphanumeric(ref pos));
             }
@@ -129,6 +125,8 @@ namespace Spreadsheet_D._Cheatham
             this.spreadsheet.CellPropertyChanged += this.OnEngineCellChange;
 
             this.mainDataGridView.CellValueChanged += this.OnFormCellChange;
+
+            this.mainDataGridView.SelectionChanged += this.OnCellSelect;
         }
     }
 }

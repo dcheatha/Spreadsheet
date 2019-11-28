@@ -103,7 +103,7 @@ namespace Spreadsheet_D._Cheatham
             var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
             var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
             var cell = this.spreadsheet.GetCell(columnIndex, rowIndex);
-            this.formulaBox.Text = $@"Text: {cell.Text} Value: {cell.Value}";
+            this.formulaBox.Text = $@"({columnIndex + 1}, {rowIndex + 1}) Text: {cell.Text} Value: {cell.Value}";
         }
 
         /// <summary>

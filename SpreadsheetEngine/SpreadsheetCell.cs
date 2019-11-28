@@ -22,6 +22,7 @@ namespace SpreadsheetEngine
 
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Data.SqlTypes;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -169,6 +170,12 @@ namespace SpreadsheetEngine
                 return;
             }
 
+            double result;
+            if (double.TryParse(value, out result))
+            {
+                this.expressionTree.SetVariable(this.Key, result);
+            }
+
             var matcher = new Regex("^=[A-Z]+[0-9]+$");
 
             if (matcher.IsMatch(value) && this.referencedCells.Count == 1)
@@ -183,6 +190,10 @@ namespace SpreadsheetEngine
             {
                 this.Text = this.referencedCells.First().Text;
                 this.Value = value;
+                if (double.TryParse(this.Value, out result))
+                {
+                    this.expressionTree.SetVariable(this.Key, result);
+                }
                 this.EmitPropertyChanged("text");
                 this.EmitPropertyChanged("value");
                 return;

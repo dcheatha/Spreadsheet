@@ -138,7 +138,7 @@ namespace SpreadsheetEngine
             do
             {
                 value--;
-                result = (char)('A' + (value % 26)) + result;
+                result = (char)('A' + value % 26) + result;
                 value /= 26;
             }
             while (value > 0);

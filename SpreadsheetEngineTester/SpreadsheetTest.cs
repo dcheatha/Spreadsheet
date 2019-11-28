@@ -72,20 +72,5 @@ namespace SpreadsheetEngineTester
 
             Assert.AreEqual(spreadsheet.GetSpreadsheetCell(0, 0).Text, spreadsheet.GetSpreadsheetCell(0, 1).Text);
         }
-
-        /// <summary>
-        /// </summary>
-        [TestMethod]
-        public void GetCellLink()
-        {
-            var spreadsheet = new Spreadsheet(100, 100);
-
-            string[] checks = { "A1", "B5", "Z100" };
-
-            for (var pos = 0; pos < checks.GetLength(0); pos++)
-            {
-                Assert.AreEqual(checks[pos], spreadsheet.FollowCellLink(checks[pos]).Key);
-            }
-        }
     }
 }

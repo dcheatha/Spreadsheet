@@ -20,7 +20,6 @@ namespace SpreadsheetEngine
 {
     #region
 
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Text.RegularExpressions;
@@ -128,6 +127,7 @@ namespace SpreadsheetEngine
             if (value == string.Empty)
             {
                 base.Value = string.Empty;
+                return;
             }
 
             if (value.StartsWith("="))

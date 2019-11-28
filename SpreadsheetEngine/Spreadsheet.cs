@@ -25,7 +25,6 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Text.RegularExpressions;
 
     #endregion
 
@@ -65,7 +64,7 @@ namespace SpreadsheetEngine
                 for (var row = 0; row < this.RowCount; row++)
                 {
                     var newCell = new SpreadsheetCell(column, row, this.variablesDictionary);
-                    newCell.PropertyChanged += this.CellChange;
+                    newCell.PropertyChanged += this.EngineCellChange;
                     this.cells.Add(newCell.Key, newCell);
                 }
             }
@@ -159,7 +158,7 @@ namespace SpreadsheetEngine
         /// <param name="value">
         ///     Value of cell
         /// </param>
-        public void CellChangeRequest(int column, int row, string value)
+        public void FormCellChange(int column, int row, string value)
         {
             var changedCell = this.GetSpreadsheetCell(column, row);
 
@@ -171,7 +170,7 @@ namespace SpreadsheetEngine
             foreach (var cellKey in changedCell.GetReferencedCells())
             {
                 var referencedCell = this.GetSpreadsheetCell(cellKey);
-                changedCell.PropertyChanged -= referencedCell.OnVariableChanged;
+                referencedCell.PropertyChanged -= changedCell.OnVariableChanged;
             }
 
             changedCell.Value = value;
@@ -179,9 +178,8 @@ namespace SpreadsheetEngine
             foreach (var cellKey in changedCell.GetReferencedCells())
             {
                 var referencedCell = this.GetSpreadsheetCell(cellKey);
-                changedCell.PropertyChanged += referencedCell.OnVariableChanged;
+                referencedCell.PropertyChanged += changedCell.OnVariableChanged;
             }
-
 
         }
 
@@ -202,26 +200,6 @@ namespace SpreadsheetEngine
             var key = SpreadsheetCell.GenerateKey(column, row);
 
             return this.cells.ContainsKey(key) ? this.cells[key] : null;
-        }
-
-        /// <summary>
-        ///     Follows a link in a Cell such as A12
-        /// </summary>
-        /// <param name="link">
-        ///     String of link
-        /// </param>
-        /// <returns>
-        ///     Cell that was linked to
-        /// </returns>
-        internal SpreadsheetCell FollowCellLink(string link)
-        {
-            var columnText = Regex.Replace(link, @"[^A-Z]+", string.Empty);
-            var rowText = Regex.Replace(link,    @"[A-Z]+",  string.Empty);
-
-            var column = AlphanumericToInteger(ref columnText);
-            var row = int.Parse(rowText);
-
-            return this.GetSpreadsheetCell(column, row - 1);
         }
 
         /// <summary>
@@ -247,7 +225,7 @@ namespace SpreadsheetEngine
         ///     Gets a SpreadsheetCell from the Spreadsheet
         /// </summary>
         /// <param name="key">
-        /// The cell key
+        ///     The cell key
         /// </param>
         /// <returns>
         ///     The requested Cell, or null if it does not exist.
@@ -258,7 +236,7 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        ///     Helper function to listen to Cell events.
+        ///     Helper function to listen to Cell events from the engine.
         /// </summary>
         /// <param name="cell">
         ///     The Cell Object
@@ -266,7 +244,7 @@ namespace SpreadsheetEngine
         /// <param name="e">
         ///     The event fired with it.
         /// </param>
-        private void CellChange(object cell, PropertyChangedEventArgs e)
+        private void EngineCellChange(object cell, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "text")
             {
@@ -274,28 +252,7 @@ namespace SpreadsheetEngine
             }
 
             var c = (SpreadsheetCell)cell;
-            this.EvaluateCell(c);
             this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.ToString()));
-        }
-
-        /// <summary>
-        ///     Evaluates a Cell
-        /// </summary>
-        /// <param name="cell">
-        ///     Cell to be evaluated
-        /// </param>
-        private void EvaluateCell(SpreadsheetCell cell)
-        {
-            if (!cell.Text.StartsWith("="))
-            {
-                cell.Value = cell.Text;
-                return;
-            }
-
-            var link = cell.Text.Substring(1);
-            var linkedCell = this.FollowCellLink(link);
-
-            cell.Text = linkedCell.Text;
         }
     }
 }

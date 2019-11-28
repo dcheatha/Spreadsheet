@@ -96,7 +96,7 @@ namespace Spreadsheet_D._Cheatham
 
             var value = (string)this.mainDataGridView.Rows[rowIndex].Cells[columnIndex].Value;
 
-            this.spreadsheet.CellChangeRequest(columnIndex, rowIndex, value);
+            this.spreadsheet.FormCellChange(columnIndex, rowIndex, value);
         }
 
         /// <summary>

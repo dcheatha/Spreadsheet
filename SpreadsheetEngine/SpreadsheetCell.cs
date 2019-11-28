@@ -173,7 +173,7 @@ namespace SpreadsheetEngine
             double result;
             if (double.TryParse(value, out result))
             {
-                this.expressionTree.SetVariable(this.Key, result);
+                value = "=" + value;
             }
 
             var matcher = new Regex("^=[A-Z]+[0-9]+$");
@@ -190,32 +190,35 @@ namespace SpreadsheetEngine
             {
                 this.Text = this.referencedCells.First().Text;
                 this.Value = value;
+
                 if (double.TryParse(this.Value, out result))
                 {
                     this.expressionTree.SetVariable(this.Key, result);
                 }
-                this.EmitPropertyChanged("text");
-                this.EmitPropertyChanged("value");
-                return;
+                else
+                {
+                    this.expressionTree.SetVariable(this.Key, 0);
+                }
             }
-
-            if (value.StartsWith("="))
+            else if (value.StartsWith("="))
             {
                 this.expressionTree.SetExpression(value.Substring(1));
                 var expressionValue = this.expressionTree.Evaluate();
                 base.Value = value;
+
                 this.expressionTree.SetVariable(this.Key, expressionValue);
                 this.Text = expressionValue.ToString("G");
-                this.EmitPropertyChanged("text");
-                this.EmitPropertyChanged("value");
             }
             else
             {
                 base.Value = value;
                 this.Text = value;
-                this.EmitPropertyChanged("value");
-                this.EmitPropertyChanged("text");
+
+                this.expressionTree.SetVariable(this.Key, 0);
             }
+
+            this.EmitPropertyChanged("text");
+            this.EmitPropertyChanged("value");
         }
     }
 }

@@ -167,6 +167,11 @@ namespace SpreadsheetEngine
                 return;
             }
 
+            if (value == changedCell.Text)
+            {
+                return;
+            }
+
             foreach (var cellKey in changedCell.GetReferencedCells())
             {
                 var referencedCell = this.GetSpreadsheetCell(cellKey);
@@ -180,7 +185,6 @@ namespace SpreadsheetEngine
                 var referencedCell = this.GetSpreadsheetCell(cellKey);
                 referencedCell.PropertyChanged += changedCell.OnVariableChanged;
             }
-
         }
 
         /// <summary>

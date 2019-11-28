@@ -30,16 +30,6 @@ namespace SpreadsheetEngine
     public abstract class Cell : INotifyPropertyChanged
     {
         /// <summary>
-        ///     Text Value
-        /// </summary>
-        private string text;
-
-        /// <summary>
-        ///     Value value
-        /// </summary>
-        private string value;
-
-        /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
         /// </summary>
         /// <param name="columnIndex">
@@ -74,32 +64,22 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Gets or sets Text Value of the cell.
         /// </summary>
-        public string Text
-        {
-            get => this.text;
-            set
-            {
-                if (value == this.text)
-                {
-                    return;
-                }
-
-                this.text = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("text"));
-            }
-        }
+        public string Text { get; protected set; }
 
         /// <summary>
         ///     Gets or sets value of the cell
         /// </summary>
-        public string Value
+        public string Value { get; protected set; }
+
+        /// <summary>
+        ///     Emits a property change
+        /// </summary>
+        /// <param name="property">
+        ///     Property that changed
+        /// </param>
+        protected void EmitPropertyChanged(string property)
         {
-            get => this.value;
-            protected set
-            {
-                this.value = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("value"));
-            }
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

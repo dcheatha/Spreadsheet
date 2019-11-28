@@ -127,6 +127,7 @@ namespace SpreadsheetEngine
             if (value == string.Empty)
             {
                 base.Value = string.Empty;
+                this.EmitPropertyChanged("value");
                 return;
             }
 
@@ -134,13 +135,16 @@ namespace SpreadsheetEngine
             {
                 this.expressionTree.SetExpression(value.Substring(1));
                 var expressionValue = this.expressionTree.Evaluate();
-                this.Text = expressionValue.ToString("G");
                 base.Value = value;
                 this.expressionTree.SetVariable(this.Key, expressionValue);
+                this.Text = expressionValue.ToString("G");
+                this.EmitPropertyChanged("text");
+                this.EmitPropertyChanged("value");
             }
             else
             {
                 base.Value = value;
+                this.EmitPropertyChanged("value");
             }
         }
     }

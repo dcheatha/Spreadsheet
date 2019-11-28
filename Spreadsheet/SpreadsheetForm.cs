@@ -61,7 +61,8 @@ namespace Spreadsheet_D._Cheatham
         {
             var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
             var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
-            this.formulaBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
+            var cell = this.spreadsheet.GetCell(columnIndex, rowIndex);
+            this.formulaBox.Text = $@"Text: {cell.Text} Value: {cell.Value}";
         }
 
         /// <summary>
@@ -76,8 +77,8 @@ namespace Spreadsheet_D._Cheatham
         private void OnEngineCellChange(object sender, EventArgs e)
         {
             var cell = (Cell)sender;
-            Console.WriteLine($@"EngineCell changed with value {cell.Value}");
-            this.mainDataGridView.Rows[cell.RowIndex].Cells[cell.ColumnIndex].Value = cell.Value;
+            Console.WriteLine($@"EngineCell changed with text {cell.Text} value {cell.Value}");
+            this.mainDataGridView.Rows[cell.RowIndex].Cells[cell.ColumnIndex].Value = cell.Text;
         }
 
         /// <summary>

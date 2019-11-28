@@ -22,6 +22,7 @@ namespace SpreadsheetEngine
 
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     #endregion
@@ -40,6 +41,11 @@ namespace SpreadsheetEngine
         ///     Expression Tree
         /// </summary>
         private readonly ExpressionTree expressionTree;
+
+        /// <summary>
+        ///     List of referenced cells
+        /// </summary>
+        private readonly List<SpreadsheetCell> referencedCells = new List<SpreadsheetCell>();
 
         /// <inheritdoc />
         public SpreadsheetCell(int columnIndex, int rowIndex, Dictionary<string, double> variablesDictionary)
@@ -80,12 +86,32 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Add a reference to a cell
+        /// </summary>
+        /// <param name="cell">
+        ///     Spreadsheet Cell
+        /// </param>
+        public void AddReferencedCell(SpreadsheetCell cell)
+        {
+            cell.PropertyChanged += this.OnVariableChanged;
+            this.referencedCells.Add(cell);
+        }
+
+        /// <summary>
+        ///     Manual request to evaluate cell
+        /// </summary>
+        public void Evaluate()
+        {
+            this.Evaluate(this.Value);
+        }
+
+        /// <summary>
         ///     Returns a list of all referenced cell keys
         /// </summary>
         /// <returns>
         ///     List of cell keys
         /// </returns>
-        public List<string> GetReferencedCells()
+        public List<string> GetReferencedCellKeys()
         {
             var matches = new List<string>();
 
@@ -117,6 +143,18 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Remove a reference to a cell
+        /// </summary>
+        /// <param name="cell">
+        ///     Spreadsheet Cell
+        /// </param>
+        public void RemoveReferencedCell(SpreadsheetCell cell)
+        {
+            cell.PropertyChanged -= this.OnVariableChanged;
+            this.referencedCells.Remove(cell);
+        }
+
+        /// <summary>
         ///     Evaluate the cell
         /// </summary>
         /// <param name="value">
@@ -127,6 +165,25 @@ namespace SpreadsheetEngine
             if (value == string.Empty)
             {
                 base.Value = string.Empty;
+                this.EmitPropertyChanged("value");
+                return;
+            }
+
+            var matcher = new Regex("^=[A-Z]+[0-9]+$");
+
+            if (matcher.IsMatch(value) && this.referencedCells.Count == 1)
+            {
+                if (this.Text == this.referencedCells.First().Text)
+                {
+                    return;
+                }
+            }
+
+            if (matcher.IsMatch(value) && this.referencedCells.Count == 1)
+            {
+                this.Text = this.referencedCells.First().Text;
+                this.Value = value;
+                this.EmitPropertyChanged("text");
                 this.EmitPropertyChanged("value");
                 return;
             }
@@ -144,7 +201,9 @@ namespace SpreadsheetEngine
             else
             {
                 base.Value = value;
+                this.Text = value;
                 this.EmitPropertyChanged("value");
+                this.EmitPropertyChanged("text");
             }
         }
     }

@@ -138,7 +138,7 @@ namespace SpreadsheetEngine
             do
             {
                 value--;
-                result = (char)('A' + value % 26) + result;
+                result = (char)('A' + (value % 26)) + result;
                 value /= 26;
             }
             while (value > 0);
@@ -172,19 +172,21 @@ namespace SpreadsheetEngine
                 return;
             }
 
-            foreach (var cellKey in changedCell.GetReferencedCells())
+            foreach (var cellKey in changedCell.GetReferencedCellKeys())
             {
                 var referencedCell = this.GetSpreadsheetCell(cellKey);
-                referencedCell.PropertyChanged -= changedCell.OnVariableChanged;
+                changedCell.RemoveReferencedCell(referencedCell);
             }
 
             changedCell.Value = value;
 
-            foreach (var cellKey in changedCell.GetReferencedCells())
+            foreach (var cellKey in changedCell.GetReferencedCellKeys())
             {
                 var referencedCell = this.GetSpreadsheetCell(cellKey);
-                referencedCell.PropertyChanged += changedCell.OnVariableChanged;
+                changedCell.AddReferencedCell(referencedCell);
             }
+
+            changedCell.Evaluate();
         }
 
         /// <summary>
@@ -255,7 +257,6 @@ namespace SpreadsheetEngine
                 return;
             }
 
-            var c = (SpreadsheetCell)cell;
             this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.ToString()));
         }
     }

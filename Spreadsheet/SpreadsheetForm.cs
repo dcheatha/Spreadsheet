@@ -13,6 +13,7 @@ namespace Spreadsheet_D._Cheatham
     #region
 
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
@@ -25,6 +26,11 @@ namespace Spreadsheet_D._Cheatham
     /// </summary>
     public partial class SpreadsheetForm : Form
     {
+        /// <summary>
+        ///     Place to hold the current input box
+        /// </summary>
+        private TextBox editBox;
+
         /// <summary>
         ///     Spreadsheet that represents the DataGridView
         /// </summary>
@@ -49,6 +55,41 @@ namespace Spreadsheet_D._Cheatham
         private static extern bool SetProcessDPIAware();
 
         /// <summary>
+        ///     On cell start edit
+        /// </summary>
+        /// <param name="sender">
+        ///     Sender object
+        /// </param>
+        /// <param name="e">
+        ///     Event e
+        /// </param>
+        private void OnCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            var value = this.spreadsheet.GetCell(e.ColumnIndex, e.RowIndex).Value;
+            this.mainDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = value;
+
+            if (this.editBox != null)
+            {
+                this.editBox.Text = value;
+            }
+        }
+
+        /// <summary>
+        ///     On Cell End Edit
+        /// </summary>
+        /// <param name="sender">
+        ///     Sender object
+        /// </param>
+        /// <param name="e">
+        ///     Event e
+        /// </param>
+        private void OnCellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            this.mainDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value =
+                this.spreadsheet.GetCell(e.ColumnIndex, e.RowIndex).Text;
+        }
+
+        /// <summary>
         ///     Fired when a cell is selected
         /// </summary>
         /// <param name="sender">
@@ -63,6 +104,37 @@ namespace Spreadsheet_D._Cheatham
             var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
             var cell = this.spreadsheet.GetCell(columnIndex, rowIndex);
             this.formulaBox.Text = $@"Text: {cell.Text} Value: {cell.Value}";
+        }
+
+        /// <summary>
+        ///     On Edit Control Showing
+        /// </summary>
+        /// <param name="sender">
+        ///     Something sending
+        /// </param>
+        /// <param name="e">
+        ///     the event
+        /// </param>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        private void OnEditControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (e.Control is TextBox box)
+            {
+                this.editBox = box;
+                var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
+                var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
+
+                this.editBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
+            }
         }
 
         /// <summary>
@@ -132,6 +204,10 @@ namespace Spreadsheet_D._Cheatham
             this.mainDataGridView.CellValueChanged += this.OnFormCellChange;
 
             this.mainDataGridView.SelectionChanged += this.OnCellSelect;
+
+            this.mainDataGridView.CellBeginEdit += this.OnCellBeginEdit;
+            this.mainDataGridView.CellEndEdit += this.OnCellEndEdit;
+            this.mainDataGridView.EditingControlShowing += this.OnEditControlShowing;
         }
     }
 }

@@ -64,7 +64,7 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Gets or sets Text Value of the cell.
         /// </summary>
-        public string Text { get; protected set; }
+        public string Text { get; set; }
 
         /// <summary>
         ///     Gets or sets value of the cell

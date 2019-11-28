@@ -1,8 +1,12 @@
-﻿// ==================================================
+﻿#region a
+
+// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // Program.cs - ExpressionTreeConsoleApp
 // Created 2019/11/13 at 15:00
 // ==================================================
+
+#endregion
 
 namespace ExpressionTreeConsoleApp
 {

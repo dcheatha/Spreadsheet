@@ -1,8 +1,12 @@
-﻿// ==================================================
+﻿#region a
+
+// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // SpreadsheetForm.cs - Spreadsheet_D._Cheatham
 // Created 2019/10/29 at 21:11
 // ==================================================
+
+#endregion
 
 namespace Spreadsheet_D._Cheatham
 {
@@ -45,6 +49,22 @@ namespace Spreadsheet_D._Cheatham
         private static extern bool SetProcessDPIAware();
 
         /// <summary>
+        ///     Fired when a cell is selected
+        /// </summary>
+        /// <param name="sender">
+        ///     The form
+        /// </param>
+        /// <param name="e">
+        ///     Event parameters
+        /// </param>
+        private void OnCellSelect(object sender, EventArgs e)
+        {
+            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
+            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
+            this.formulaBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
+        }
+
+        /// <summary>
         ///     Runs when a cell is changed in the engine
         /// </summary>
         /// <param name="sender">
@@ -77,22 +97,6 @@ namespace Spreadsheet_D._Cheatham
             var value = (string)this.mainDataGridView.Rows[rowIndex].Cells[columnIndex].Value;
 
             this.spreadsheet.CellChangeRequest(columnIndex, rowIndex, value);
-        }
-
-        /// <summary>
-        /// Fired when a cell is selected
-        /// </summary>
-        /// <param name="sender">
-        /// The form
-        /// </param>
-        /// <param name="e">
-        ///     Event parameters
-        /// </param>
-        private void OnCellSelect(object sender, EventArgs e)
-        {
-            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
-            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
-            this.formulaBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
         }
 
         /// <summary>

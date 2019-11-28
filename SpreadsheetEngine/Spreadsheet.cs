@@ -1,8 +1,12 @@
-﻿// ==================================================
+﻿#region a
+
+// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // Spreadsheet.cs - SpreadsheetEngine
 // Created 2019/10/30 at 00:12
 // ==================================================
+
+#endregion
 
 #region
 
@@ -38,7 +42,7 @@ namespace SpreadsheetEngine
         private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
 
         /// <summary>
-        /// Dictionary shared among all cells' expression trees
+        ///     Dictionary shared among all cells' expression trees
         /// </summary>
         private readonly Dictionary<string, double> variablesDictionary = new Dictionary<string, double>();
 
@@ -55,7 +59,6 @@ namespace SpreadsheetEngine
         {
             this.ColumnCount = columns;
             this.RowCount = rows;
-
 
             for (var column = 0; column < this.ColumnCount; column++)
             {
@@ -145,27 +148,41 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Request to change cell value
+        ///     Request to change cell value
         /// </summary>
         /// <param name="column">
-        /// Column number
+        ///     Column number
         /// </param>
         /// <param name="row">
-        /// Row number
+        ///     Row number
         /// </param>
         /// <param name="value">
-        /// Value of cell
+        ///     Value of cell
         /// </param>
         public void CellChangeRequest(int column, int row, string value)
         {
-            var cell = this.GetSpreadsheetCell(column, row);
+            var changedCell = this.GetSpreadsheetCell(column, row);
 
-            if (cell == null)
+            if (changedCell == null)
             {
                 return;
             }
 
-            cell.Value = value;
+            foreach (var cellKey in changedCell.GetReferencedCells())
+            {
+                var referencedCell = this.GetSpreadsheetCell(cellKey);
+                changedCell.PropertyChanged -= referencedCell.OnVariableChanged;
+            }
+
+            changedCell.Value = value;
+
+            foreach (var cellKey in changedCell.GetReferencedCells())
+            {
+                var referencedCell = this.GetSpreadsheetCell(cellKey);
+                changedCell.PropertyChanged += referencedCell.OnVariableChanged;
+            }
+
+
         }
 
         /// <summary>
@@ -223,6 +240,20 @@ namespace SpreadsheetEngine
         {
             var key = SpreadsheetCell.GenerateKey(column, row);
 
+            return this.GetSpreadsheetCell(key);
+        }
+
+        /// <summary>
+        ///     Gets a SpreadsheetCell from the Spreadsheet
+        /// </summary>
+        /// <param name="key">
+        /// The cell key
+        /// </param>
+        /// <returns>
+        ///     The requested Cell, or null if it does not exist.
+        /// </returns>
+        internal SpreadsheetCell GetSpreadsheetCell(string key)
+        {
             return this.cells.ContainsKey(key) ? (SpreadsheetCell)this.cells[key] : null;
         }
 

@@ -1,8 +1,12 @@
-﻿// ==================================================
+﻿#region a
+
+// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // Cell.cs - SpreadsheetEngine
 // Created 2019/10/29 at 22:10
 // ==================================================
+
+#endregion
 
 #region
 
@@ -31,9 +35,9 @@ namespace SpreadsheetEngine
         private string text;
 
         /// <summary>
-        /// Value equation
+        ///     Value value
         /// </summary>
-        private string equation;
+        private string value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
@@ -86,15 +90,15 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        ///     Gets or sets equation of the cell
+        ///     Gets or sets value of the cell
         /// </summary>
         public string Value
         {
-            get => this.equation;
+            get => this.value;
             protected set
             {
-                this.equation = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("equation"));
+                this.value = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("value"));
             }
         }
     }

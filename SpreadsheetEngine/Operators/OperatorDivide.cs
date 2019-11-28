@@ -1,8 +1,12 @@
-﻿// ==================================================
+﻿#region a
+
+// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // OperatorDivide.cs - SpreadsheetEngine
 // Created 2019/11/18 at 23:14
 // ==================================================
+
+#endregion
 
 namespace SpreadsheetEngine.Operators
 {

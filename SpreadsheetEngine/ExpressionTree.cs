@@ -1,8 +1,12 @@
-﻿// ==================================================
+﻿#region a
+
+// ==================================================
 // D. Cheatham (SID: xxxxxxxx)
 // ExpressionTree.cs - SpreadsheetEngine
 // Created 2019/11/05 at 19:32
 // ==================================================
+
+#endregion
 
 namespace SpreadsheetEngine
 {
@@ -126,6 +130,11 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Returns a list of variables
+        /// </summary>
+        public List<string> GetVariables => FindVariables(this.rawExpression).ToList();
+
+        /// <summary>
         ///     Adds default expression operators (Add, Subtract, Divide, Multiply, and Power)
         /// </summary>
         public static void AddDefaultOperators()
@@ -191,6 +200,7 @@ namespace SpreadsheetEngine
         public void SetExpression(string expression)
         {
             this.rawExpression = expression;
+            this.rootNode = null;
         }
 
         /// <summary>

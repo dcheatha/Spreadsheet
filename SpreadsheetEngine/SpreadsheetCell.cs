@@ -20,7 +20,6 @@ namespace SpreadsheetEngine
 {
     #region
 
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
@@ -95,6 +94,11 @@ namespace SpreadsheetEngine
         /// </param>
         public void AddReferencedCell(SpreadsheetCell cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             cell.PropertyChanged += this.OnVariableChanged;
             this.referencedCells.Add(cell);
         }
@@ -224,6 +228,11 @@ namespace SpreadsheetEngine
         /// </param>
         public void RemoveReferencedCell(SpreadsheetCell cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             cell.PropertyChanged -= this.OnVariableChanged;
             this.referencedCells.Remove(cell);
         }
@@ -261,56 +270,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Determines if the cell has a circular reference
-        /// </summary>
-        /// <param name="visitedCells">
-        /// List of visited cells
-        /// </param>
-        /// <param name="key">
-        /// Key of cell to check
-        /// </param>
-        /// <returns>
-        /// True or false
-        /// </returns>
-        private bool HasCircularReference(List<SpreadsheetCell> visitedCells, string key)
-        {
-            foreach (var cell in this.referencedCells)
-            {
-                if (visitedCells.Contains(cell))
-                {
-                    continue;
-                }
-
-                visitedCells.Add(cell);
-
-                if (cell.Key == key)
-                {
-                    return true;
-                }
-
-                if (cell.HasCircularReference(visitedCells, key))
-                {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Determines if the cell has a circular reference
-        /// </summary>
-        /// <returns>
-        /// True or false
-        /// </returns>
-        private bool HasCircularReference()
-        {
-            return this.HasCircularReference(new List<SpreadsheetCell>(), this.Key);
-        }
-
-
-        /// <summary>
         ///     Evaluate the cell
         /// </summary>
         /// <param name="value">
@@ -331,6 +290,12 @@ namespace SpreadsheetEngine
             if (this.HasCircularReference())
             {
                 this.Text = "[circularReference]";
+                return;
+            }
+
+            if (!this.expressionTree.HasVariables())
+            {
+                this.Text = "[badReference]";
                 return;
             }
 
@@ -385,6 +350,54 @@ namespace SpreadsheetEngine
 
                 this.expressionTree.SetVariable(this.Key, 0);
             }
+        }
+
+        /// <summary>
+        ///     Determines if the cell has a circular reference
+        /// </summary>
+        /// <param name="visitedCells">
+        ///     List of visited cells
+        /// </param>
+        /// <param name="key">
+        ///     Key of cell to check
+        /// </param>
+        /// <returns>
+        ///     True or false
+        /// </returns>
+        private bool HasCircularReference(List<SpreadsheetCell> visitedCells, string key)
+        {
+            foreach (var cell in this.referencedCells)
+            {
+                if (visitedCells.Contains(cell))
+                {
+                    continue;
+                }
+
+                visitedCells.Add(cell);
+
+                if (cell.Key == key)
+                {
+                    return true;
+                }
+
+                if (cell.HasCircularReference(visitedCells, key))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Determines if the cell has a circular reference
+        /// </summary>
+        /// <returns>
+        ///     True or false
+        /// </returns>
+        private bool HasCircularReference()
+        {
+            return this.HasCircularReference(new List<SpreadsheetCell>(), this.Key);
         }
     }
 }

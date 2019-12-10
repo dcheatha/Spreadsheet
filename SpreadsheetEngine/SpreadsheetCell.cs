@@ -53,6 +53,7 @@ namespace SpreadsheetEngine
             : base(columnIndex, rowIndex)
         {
             this.expressionTree = new ExpressionTree(string.Empty, variablesDictionary);
+            this.expressionTree.SetVariable(this.Key, 0);
         }
 
         /// <summary>

@@ -20,7 +20,6 @@ namespace SpreadsheetEngine
 {
     #region
 
-    using System;
     using System.ComponentModel;
 
     #endregion
@@ -158,7 +157,6 @@ namespace SpreadsheetEngine
         /// </param>
         private void EmitPropertyChanged(string property)
         {
-            Console.WriteLine($"Sending event {property}");
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }

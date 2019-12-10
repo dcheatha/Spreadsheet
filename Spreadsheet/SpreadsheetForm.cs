@@ -69,18 +69,15 @@ namespace Spreadsheet_D._Cheatham
         {
             var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
             var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
-            var cell = this.spreadsheet.GetCell(columnIndex, rowIndex);
-
-            if (cell == null)
-            {
-                this.editBox.Text = @"Please select a cell to pick a color";
-            }
 
             this.colorDialog1.ShowDialog();
 
             var color = this.colorDialog1.Color;
 
-            this.spreadsheet.FormCellColorChange(columnIndex, rowIndex, color.R, color.G, color.B);
+            foreach (DataGridViewTextBoxCell cell in this.mainDataGridView.SelectedCells)
+            {
+                this.spreadsheet.FormCellColorChange(cell.ColumnIndex, cell.RowIndex, color.R, color.G, color.B);
+            }
         }
 
         /// <summary>
@@ -198,12 +195,6 @@ namespace Spreadsheet_D._Cheatham
                 {
                     var (a, r, g, b) = engineCell.ColorRgb;
                     formCell.Style.BackColor = Color.FromArgb(a, r, g, b);
-                    break;
-                }
-
-                default:
-                {
-                    Console.WriteLine($@"Unknown Event {e.PropertyName}");
                     break;
                 }
             }

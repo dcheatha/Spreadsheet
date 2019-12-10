@@ -166,6 +166,17 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Peak the redoHistory
+        /// </summary>
+        /// <returns>
+        ///     Peaked redoHistory
+        /// </returns>
+        public (string, string) PeakRedo()
+        {
+            return this.RedoHistory.Peek();
+        }
+
+        /// <summary>
         ///     Peak the undoHistory
         /// </summary>
         /// <returns>
@@ -179,7 +190,11 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Redo Function
         /// </summary>
-        [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         [SuppressMessage(
             "StyleCop.CSharp.ReadabilityRules",
             "SA1126:PrefixCallsCorrectly",
@@ -215,7 +230,11 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Undo Function
         /// </summary>
-        [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         [SuppressMessage(
             "StyleCop.CSharp.ReadabilityRules",
             "SA1126:PrefixCallsCorrectly",
@@ -223,20 +242,23 @@ namespace SpreadsheetEngine
         )]
         public void Undo()
         {
-            var (property, value) = this.UndoHistory.Pop();
-            this.RedoHistory.Push((property, value));
+            var (property, oldValue) = this.UndoHistory.Pop();
+
 
             if (property == "value")
             {
-                this.Evaluate(value);
+                this.RedoHistory.Push((property, this.Value));
+                this.Evaluate(oldValue);
                 this.UndoHistory.Pop();
             }
 
             if (property == "color")
             {
-                this.Color = uint.Parse(value);
+                this.RedoHistory.Push((property, this.Color.ToString()));
+                this.Color = uint.Parse(oldValue);
                 this.UndoHistory.Pop();
             }
+
         }
 
         /// <summary>
@@ -259,6 +281,7 @@ namespace SpreadsheetEngine
         {
             if (value == string.Empty)
             {
+                this.Text = string.Empty;
                 base.Value = string.Empty;
                 return;
             }

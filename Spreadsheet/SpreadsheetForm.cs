@@ -171,7 +171,11 @@ namespace Spreadsheet_D._Cheatham
         /// <param name="e">
         ///     Part that changed
         /// </param>
-        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         private void OnEngineCellChange(object sender, PropertyChangedEventArgs e)
         {
             var engineCell = (Cell)sender;
@@ -196,6 +200,8 @@ namespace Spreadsheet_D._Cheatham
                     break;
                 }
             }
+
+            this.ProcessUndoRedo();
         }
 
         /// <summary>
@@ -215,6 +221,35 @@ namespace Spreadsheet_D._Cheatham
             var value = (string)this.mainDataGridView.Rows[rowIndex].Cells[columnIndex].Value;
 
             this.spreadsheet.FormCellChange(columnIndex, rowIndex, value);
+        }
+
+        /// <summary>
+        ///     Process undo and redo states
+        /// </summary>
+        private void ProcessUndoRedo()
+        {
+            if (this.spreadsheet.CanUndo)
+            {
+                var (cell, property, value) = this.spreadsheet.UndoPeak();
+                this.undoToolStripMenuItem.Text = $@"Undo (Set {cell} {property} to '{value}')";
+            }
+            else
+            {
+                this.undoToolStripMenuItem.Text = @"Undo";
+            }
+
+            if (this.spreadsheet.CanRedo)
+            {
+                var (cell, property, value) = this.spreadsheet.RedoPeak();
+                this.redoToolStripMenuItem.Text = $@"Redo (Set {cell} {property} to '{value}')";
+            }
+            else
+            {
+                this.redoToolStripMenuItem.Text = @"Redo";
+            }
+
+            this.undoToolStripMenuItem.Enabled = this.spreadsheet.CanUndo;
+            this.redoToolStripMenuItem.Enabled = this.spreadsheet.CanRedo;
         }
 
         /// <summary>
@@ -253,6 +288,37 @@ namespace Spreadsheet_D._Cheatham
             this.mainDataGridView.CellBeginEdit += this.OnCellBeginEdit;
             this.mainDataGridView.CellEndEdit += this.OnCellEndEdit;
             this.mainDataGridView.EditingControlShowing += this.OnEditControlShowing;
+            this.ProcessUndoRedo();
+        }
+
+        /// <summary>
+        ///     Undo Stuff
+        /// </summary>
+        /// <param name="sender">
+        ///     Sender sender
+        /// </param>
+        /// <param name="e">
+        ///     Event e
+        /// </param>
+        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            this.spreadsheet.Undo();
+            this.ProcessUndoRedo();
+        }
+
+        /// <summary>
+        /// Redoes stuff
+        /// </summary>
+        /// <param name="sender">
+        /// Sender sender
+        /// </param>
+        /// <param name="e">
+        /// Event event
+        /// </param>
+        private void RedoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            this.spreadsheet.Redo();
+            this.ProcessUndoRedo();
         }
     }
 }

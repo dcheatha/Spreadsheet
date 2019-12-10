@@ -42,14 +42,14 @@ namespace SpreadsheetEngine
         private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
 
         /// <summary>
-        /// Undo stack
+        ///     Redo stack
         /// </summary>
-        private Stack<SpreadsheetCell> undoStack = new Stack<SpreadsheetCell>();
+        private readonly Stack<SpreadsheetCell> redoStack = new Stack<SpreadsheetCell>();
 
         /// <summary>
-        /// Redo stack
+        ///     Undo stack
         /// </summary>
-        private Stack<SpreadsheetCell> redoStack = new Stack<SpreadsheetCell>();
+        private readonly Stack<SpreadsheetCell> undoStack = new Stack<SpreadsheetCell>();
 
         /// <summary>
         ///     Dictionary shared among all cells' expression trees
@@ -85,6 +85,22 @@ namespace SpreadsheetEngine
         ///     Fires whenever a cell property changes
         /// </summary>
         public event PropertyChangedEventHandler CellPropertyChanged;
+
+        /// <summary>
+        ///     Can I redo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanRedo => this.redoStack.Count > 0;
+
+        /// <summary>
+        ///     Can I undo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanUndo => this.undoStack.Count > 0;
 
         /// <summary>
         ///     Gets Number of Columns
@@ -260,6 +276,82 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Redo function
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     There is nothing to undo
+        /// </exception>
+        public void Redo()
+        {
+            if (!this.CanRedo)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var cell = this.redoStack.Pop();
+            cell.Redo();
+        }
+
+        /// <summary>
+        ///     Peak Redo
+        /// </summary>
+        /// <returns>
+        ///     Peaked undo
+        /// </returns>
+        public (string, string, string) RedoPeak()
+        {
+            if (!this.CanRedo)
+            {
+                return (null, string.Empty, string.Empty);
+            }
+
+            var (property, value) = this.redoStack.Peek().PeakRedo();
+
+            var cell = this.redoStack.Peek();
+
+            return (SpreadsheetCell.GenerateKey(cell.ColumnIndex, cell.RowIndex), property, value);
+        }
+
+        /// <summary>
+        ///     Undo function
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     There is nothing to undo
+        /// </exception>
+        public void Undo()
+        {
+            if (!this.CanUndo)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var cell = this.undoStack.Pop();
+            cell.Undo();
+            this.undoStack.Pop();
+            this.redoStack.Push(cell);
+        }
+
+        /// <summary>
+        ///     Peak Undo
+        /// </summary>
+        /// <returns>
+        ///     Peaked undo
+        /// </returns>
+        public (string, string, string) UndoPeak()
+        {
+            if (!this.CanUndo)
+            {
+                return (null, string.Empty, string.Empty);
+            }
+
+            var (property, value) = this.undoStack.Peek().PeakUndo();
+
+            var cell = this.undoStack.Peek();
+
+            return (SpreadsheetCell.GenerateKey(cell.ColumnIndex, cell.RowIndex), property, value);
+        }
+
+        /// <summary>
         ///     Gets a SpreadsheetCell from the Spreadsheet
         /// </summary>
         /// <param name="column">
@@ -303,6 +395,11 @@ namespace SpreadsheetEngine
         /// </param>
         private void EngineCellChange(object cell, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == "color" || e.PropertyName == "value")
+            {
+                this.undoStack.Push((SpreadsheetCell)cell);
+            }
+
             this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.PropertyName));
         }
     }

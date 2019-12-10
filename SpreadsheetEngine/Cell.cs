@@ -20,6 +20,7 @@ namespace SpreadsheetEngine
 {
     #region
 
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
 
@@ -43,17 +44,17 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Color newValue
         /// </summary>
-        private uint color;
+        private uint color = uint.MaxValue;
 
         /// <summary>
         ///     Text newValue
         /// </summary>
-        private string text;
+        private string text = string.Empty;
 
         /// <summary>
         ///     Value newValue
         /// </summary>
-        private string value;
+        private string value = string.Empty;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
@@ -90,8 +91,9 @@ namespace SpreadsheetEngine
                     return;
                 }
 
+                var oldValue = this.color;
                 this.color = value;
-                this.EmitPropertyChanged("color", this.value);
+                this.EmitPropertyChanged("color", oldValue.ToString());
             }
         }
 
@@ -137,8 +139,9 @@ namespace SpreadsheetEngine
                     return;
                 }
 
+                var oldValue = this.text;
                 this.text = value;
-                this.EmitPropertyChanged("text", value);
+                this.EmitPropertyChanged("text", oldValue);
             }
         }
 
@@ -155,25 +158,27 @@ namespace SpreadsheetEngine
                     return;
                 }
 
+                var oldValue = this.value;
                 this.value = value;
-                this.EmitPropertyChanged("value", value);
+                this.EmitPropertyChanged("value", oldValue);
             }
         }
 
         /// <summary>
-        /// Emits a property change
+        ///     Emits a property change
         /// </summary>
         /// <param name="property">
-        /// Property that changed
+        ///     Property that changed
         /// </param>
-        /// <param name="newValue">
-        /// the newValue of the change
+        /// <param name="oldValue">
+        ///     the old value of the change
         /// </param>
-        private void EmitPropertyChanged(string property, string newValue)
+        private void EmitPropertyChanged(string property, string oldValue)
         {
-            if (property == "color" || property == "newValue")
+            if (property == "color" || property == "value")
             {
-                this.UndoHistory.Push((property, newValue));
+                this.UndoHistory.Push((property, oldValue));
+                Console.WriteLine($"Got undo item {property} with value {oldValue}");
             }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));

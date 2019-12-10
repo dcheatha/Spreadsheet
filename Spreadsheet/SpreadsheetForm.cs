@@ -179,15 +179,17 @@ namespace Spreadsheet_D._Cheatham
         /// </param>
         private void OnEngineCellChange(object sender, PropertyChangedEventArgs e)
         {
-            Console.WriteLine($@"Engine Event {e.PropertyName}");
             var engineCell = (Cell)sender;
             var formCell = this.mainDataGridView.Rows[engineCell.RowIndex].Cells[engineCell.ColumnIndex];
             switch (e.PropertyName)
             {
                 case "value":
+                {
+                    break;
+                }
+
                 case "text":
                 {
-                    Console.WriteLine($@"EngineCell changed with text {engineCell.Text} value {engineCell.Value}");
                     formCell.Value = engineCell.Text;
                     break;
                 }

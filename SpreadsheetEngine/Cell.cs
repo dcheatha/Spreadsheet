@@ -75,8 +75,12 @@ namespace SpreadsheetEngine
             get => this.color;
             protected set
             {
+                if (this.color == value)
+                {
+                    return;
+                }
+
                 this.color = value;
-                Console.WriteLine($"Color set to {value}");
                 this.EmitPropertyChanged("color");
             }
         }
@@ -118,6 +122,11 @@ namespace SpreadsheetEngine
             get => this.text;
             protected set
             {
+                if (this.text == value)
+                {
+                    return;
+                }
+
                 this.text = value;
                 this.EmitPropertyChanged("text");
             }
@@ -131,6 +140,11 @@ namespace SpreadsheetEngine
             get => this.value;
             protected set
             {
+                if (this.value == value)
+                {
+                    return;
+                }
+
                 this.value = value;
                 this.EmitPropertyChanged("value");
             }

@@ -52,7 +52,7 @@ namespace SpreadsheetEngineTester
 
             cell.PropertyChanged += (sender, args) => { passing = true; };
 
-            cell.Text = "Test";
+            cell.Value = "Test";
 
             Assert.IsTrue(passing);
         }

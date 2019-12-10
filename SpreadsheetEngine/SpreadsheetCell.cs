@@ -22,7 +22,7 @@ namespace SpreadsheetEngine
 
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Data.SqlTypes;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -161,17 +161,25 @@ namespace SpreadsheetEngine
         /// <param name="value">
         ///     Value to evaluate with
         /// </param>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         private void Evaluate(string value)
         {
             if (value == string.Empty)
             {
                 base.Value = string.Empty;
-                this.EmitPropertyChanged("value");
                 return;
             }
 
-            double result;
-            if (double.TryParse(value, out result))
+            if (double.TryParse(value, out _))
             {
                 value = "=" + value;
             }
@@ -190,8 +198,7 @@ namespace SpreadsheetEngine
             {
                 this.Text = this.referencedCells.First().Text;
                 this.Value = value;
-
-                if (double.TryParse(this.Value, out result))
+                if (double.TryParse(this.Value, out var result))
                 {
                     this.expressionTree.SetVariable(this.Key, result);
                 }
@@ -216,9 +223,6 @@ namespace SpreadsheetEngine
 
                 this.expressionTree.SetVariable(this.Key, 0);
             }
-
-            this.EmitPropertyChanged("text");
-            this.EmitPropertyChanged("value");
         }
     }
 }

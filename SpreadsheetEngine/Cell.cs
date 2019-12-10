@@ -20,6 +20,7 @@ namespace SpreadsheetEngine
 {
     #region
 
+    using System;
     using System.ComponentModel;
 
     #endregion
@@ -29,6 +30,21 @@ namespace SpreadsheetEngine
     /// </summary>
     public abstract class Cell : INotifyPropertyChanged
     {
+        /// <summary>
+        ///     Color value
+        /// </summary>
+        private uint color;
+
+        /// <summary>
+        ///     Text value
+        /// </summary>
+        private string text;
+
+        /// <summary>
+        ///     Value value
+        /// </summary>
+        private string value;
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="Cell" /> class.
         /// </summary>
@@ -52,6 +68,39 @@ namespace SpreadsheetEngine
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        ///     Gets or sets color, from snow white to coal black and all the hue in between
+        /// </summary>
+        public uint Color
+        {
+            get => this.color;
+            protected set
+            {
+                this.color = value;
+                Console.WriteLine($"Color set to {value}");
+                this.EmitPropertyChanged("color");
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the ARGB value of Color
+        /// </summary>
+        public (int alpha, int red, int green, int blue) ColorRgb
+        {
+            get
+            {
+                var values = new byte[4];
+                for (var pos = 0; pos < values.Length; pos++)
+                {
+                    values[pos] = (byte)(this.Color >> (pos * 8));
+                }
+
+                return (values[3], values[2], values[1], values[0]);
+            }
+
+            set => this.Color = (uint)((value.alpha << 24) | (value.red << 16) | (value.green << 8) | value.blue);
+        }
+
+        /// <summary>
         ///     Gets ColumnIndex of the cell.
         /// </summary>
         public int ColumnIndex { get; }
@@ -64,12 +113,28 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Gets or sets Text Value of the cell.
         /// </summary>
-        public string Text { get; set; }
+        public string Text
+        {
+            get => this.text;
+            protected set
+            {
+                this.text = value;
+                this.EmitPropertyChanged("text");
+            }
+        }
 
         /// <summary>
         ///     Gets or sets value of the cell
         /// </summary>
-        public string Value { get; protected set; }
+        public string Value
+        {
+            get => this.value;
+            protected set
+            {
+                this.value = value;
+                this.EmitPropertyChanged("value");
+            }
+        }
 
         /// <summary>
         ///     Emits a property change
@@ -77,8 +142,9 @@ namespace SpreadsheetEngine
         /// <param name="property">
         ///     Property that changed
         /// </param>
-        protected void EmitPropertyChanged(string property)
+        private void EmitPropertyChanged(string property)
         {
+            Console.WriteLine($"Sending event {property}");
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }

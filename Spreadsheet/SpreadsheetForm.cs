@@ -13,7 +13,9 @@ namespace Spreadsheet_D._Cheatham
     #region
 
     using System;
+    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
+    using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
@@ -53,6 +55,33 @@ namespace Spreadsheet_D._Cheatham
         /// </returns>
         [DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
+
+        /// <summary>
+        ///     Launch the Change Background Color thing
+        /// </summary>
+        /// <param name="sender">
+        ///     Event Sender
+        /// </param>
+        /// <param name="e">
+        ///     Event E thing
+        /// </param>
+        private void ChangeBackgroundColorToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
+            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
+            var cell = this.spreadsheet.GetCell(columnIndex, rowIndex);
+
+            if (cell == null)
+            {
+                this.editBox.Text = @"Please select a cell to pick a color";
+            }
+
+            this.colorDialog1.ShowDialog();
+
+            var color = this.colorDialog1.Color;
+
+            this.spreadsheet.FormCellColorChange(columnIndex, rowIndex, color.R, color.G, color.B);
+        }
 
         /// <summary>
         ///     On cell start edit
@@ -127,14 +156,16 @@ namespace Spreadsheet_D._Cheatham
         )]
         private void OnEditControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            if (e.Control is TextBox box)
+            if (!(e.Control is TextBox box))
             {
-                this.editBox = box;
-                var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
-                var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
-
-                this.editBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
+                return;
             }
+
+            this.editBox = box;
+            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
+            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
+
+            this.editBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
         }
 
         /// <summary>
@@ -146,11 +177,34 @@ namespace Spreadsheet_D._Cheatham
         /// <param name="e">
         ///     Part that changed
         /// </param>
-        private void OnEngineCellChange(object sender, EventArgs e)
+        private void OnEngineCellChange(object sender, PropertyChangedEventArgs e)
         {
-            var cell = (Cell)sender;
-            Console.WriteLine($@"EngineCell changed with text {cell.Text} value {cell.Value}");
-            this.mainDataGridView.Rows[cell.RowIndex].Cells[cell.ColumnIndex].Value = cell.Text;
+            Console.WriteLine($@"Engine Event {e.PropertyName}");
+            var engineCell = (Cell)sender;
+            var formCell = this.mainDataGridView.Rows[engineCell.RowIndex].Cells[engineCell.ColumnIndex];
+            switch (e.PropertyName)
+            {
+                case "value":
+                case "text":
+                {
+                    Console.WriteLine($@"EngineCell changed with text {engineCell.Text} value {engineCell.Value}");
+                    formCell.Value = engineCell.Text;
+                    break;
+                }
+
+                case "color":
+                {
+                    var (a, r, g, b) = engineCell.ColorRgb;
+                    formCell.Style.BackColor = Color.FromArgb(a, r, g, b);
+                    break;
+                }
+
+                default:
+                {
+                    Console.WriteLine($@"Unknown Event {e.PropertyName}");
+                    break;
+                }
+            }
         }
 
         /// <summary>

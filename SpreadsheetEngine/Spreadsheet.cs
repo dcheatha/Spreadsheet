@@ -25,6 +25,7 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
 
     #endregion
 
@@ -108,12 +109,12 @@ namespace SpreadsheetEngine
                 So, we can just use base 27 and replace the digits with the ones we'd like:
             */
 
-            var alphabetStart = 'A';
+            const char AlphabetStart = 'A';
             var result = 0;
 
             for (var pos = 0; pos < input.Length; pos++)
             {
-                var currentDigit = input[pos] - alphabetStart + 1;
+                var currentDigit = input[pos] - AlphabetStart + 1;
 
                 result += (int)Math.Pow(26, input.Length - pos - 1) * currentDigit;
             }
@@ -130,6 +131,16 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Alphanumeric value
         /// </returns>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.MaintainabilityRules",
+            "SA1407:ArithmeticExpressionsMustDeclarePrecedence",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         public static string IntegerToAlphanumeric(ref int input)
         {
             var result = string.Empty;
@@ -187,6 +198,36 @@ namespace SpreadsheetEngine
             }
 
             changedCell.Evaluate();
+        }
+
+        /// <summary>
+        ///     Run this to request a cell's color be updated
+        /// </summary>
+        /// <param name="column">
+        ///     Column id
+        /// </param>
+        /// <param name="row">
+        ///     row id
+        /// </param>
+        /// <param name="r">
+        ///     the red
+        /// </param>
+        /// <param name="g">
+        ///     the green
+        /// </param>
+        /// <param name="b">
+        ///     the blue
+        /// </param>
+        public void FormCellColorChange(int column, int row, int r, int g, int b)
+        {
+            var changedCell = this.GetSpreadsheetCell(column, row);
+
+            if (changedCell == null)
+            {
+                return;
+            }
+
+            changedCell.ColorRgb = (255, r, g, b);
         }
 
         /// <summary>
@@ -252,12 +293,7 @@ namespace SpreadsheetEngine
         /// </param>
         private void EngineCellChange(object cell, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "text")
-            {
-                return;
-            }
-
-            this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.ToString()));
+            this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.PropertyName));
         }
     }
 }

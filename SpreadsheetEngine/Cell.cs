@@ -20,6 +20,7 @@ namespace SpreadsheetEngine
 {
     #region
 
+    using System.Collections.Generic;
     using System.ComponentModel;
 
     #endregion
@@ -30,17 +31,27 @@ namespace SpreadsheetEngine
     public abstract class Cell : INotifyPropertyChanged
     {
         /// <summary>
-        ///     Color value
+        ///     Redo history of this cell
+        /// </summary>
+        protected readonly Stack<(string, string)> RedoHistory = new Stack<(string, string)>();
+
+        /// <summary>
+        ///     Undo history of this cell
+        /// </summary>
+        protected readonly Stack<(string, string)> UndoHistory = new Stack<(string, string)>();
+
+        /// <summary>
+        ///     Color newValue
         /// </summary>
         private uint color;
 
         /// <summary>
-        ///     Text value
+        ///     Text newValue
         /// </summary>
         private string text;
 
         /// <summary>
-        ///     Value value
+        ///     Value newValue
         /// </summary>
         private string value;
 
@@ -80,12 +91,12 @@ namespace SpreadsheetEngine
                 }
 
                 this.color = value;
-                this.EmitPropertyChanged("color");
+                this.EmitPropertyChanged("color", this.value);
             }
         }
 
         /// <summary>
-        ///     Gets or sets the ARGB value of Color
+        ///     Gets or sets the ARGB newValue of Color
         /// </summary>
         public (int alpha, int red, int green, int blue) ColorRgb
         {
@@ -127,12 +138,12 @@ namespace SpreadsheetEngine
                 }
 
                 this.text = value;
-                this.EmitPropertyChanged("text");
+                this.EmitPropertyChanged("text", value);
             }
         }
 
         /// <summary>
-        ///     Gets or sets value of the cell
+        ///     Gets or sets newValue of the cell
         /// </summary>
         public string Value
         {
@@ -145,18 +156,26 @@ namespace SpreadsheetEngine
                 }
 
                 this.value = value;
-                this.EmitPropertyChanged("value");
+                this.EmitPropertyChanged("value", value);
             }
         }
 
         /// <summary>
-        ///     Emits a property change
+        /// Emits a property change
         /// </summary>
         /// <param name="property">
-        ///     Property that changed
+        /// Property that changed
         /// </param>
-        private void EmitPropertyChanged(string property)
+        /// <param name="newValue">
+        /// the newValue of the change
+        /// </param>
+        private void EmitPropertyChanged(string property, string newValue)
         {
+            if (property == "color" || property == "newValue")
+            {
+                this.UndoHistory.Push((property, newValue));
+            }
+
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }

@@ -99,6 +99,28 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Can I redo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanRedo()
+        {
+            return this.RedoHistory.Count != 0;
+        }
+
+        /// <summary>
+        ///     Can I undo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanUndo()
+        {
+            return this.UndoHistory.Count != 0;
+        }
+
+        /// <summary>
         ///     Manual request to evaluate cell
         /// </summary>
         public void Evaluate()
@@ -144,6 +166,41 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Peak the undoHistory
+        /// </summary>
+        /// <returns>
+        ///     Peaked undoHistory
+        /// </returns>
+        public (string, string) PeakUndo()
+        {
+            return this.UndoHistory.Peek();
+        }
+
+        /// <summary>
+        ///     Redo Function
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        public void Redo()
+        {
+            var (property, value) = this.RedoHistory.Pop();
+
+            if (property == "value")
+            {
+                this.Evaluate(value);
+            }
+
+            if (property == "color")
+            {
+                this.Color = uint.Parse(value);
+            }
+        }
+
+        /// <summary>
         ///     Remove a reference to a cell
         /// </summary>
         /// <param name="cell">
@@ -153,6 +210,33 @@ namespace SpreadsheetEngine
         {
             cell.PropertyChanged -= this.OnVariableChanged;
             this.referencedCells.Remove(cell);
+        }
+
+        /// <summary>
+        ///     Undo Function
+        /// </summary>
+        [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:ClosingParenthesisMustBeSpacedCorrectly", Justification = "Reviewed. Suppression is OK here.")]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        public void Undo()
+        {
+            var (property, value) = this.UndoHistory.Pop();
+            this.RedoHistory.Push((property, value));
+
+            if (property == "value")
+            {
+                this.Evaluate(value);
+                this.UndoHistory.Pop();
+            }
+
+            if (property == "color")
+            {
+                this.Color = uint.Parse(value);
+                this.UndoHistory.Pop();
+            }
         }
 
         /// <summary>

@@ -42,6 +42,16 @@ namespace SpreadsheetEngine
         private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
 
         /// <summary>
+        /// Undo stack
+        /// </summary>
+        private Stack<SpreadsheetCell> undoStack = new Stack<SpreadsheetCell>();
+
+        /// <summary>
+        /// Redo stack
+        /// </summary>
+        private Stack<SpreadsheetCell> redoStack = new Stack<SpreadsheetCell>();
+
+        /// <summary>
         ///     Dictionary shared among all cells' expression trees
         /// </summary>
         private readonly Dictionary<string, double> variablesDictionary = new Dictionary<string, double>();

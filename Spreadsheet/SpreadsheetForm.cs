@@ -67,9 +67,6 @@ namespace Spreadsheet_D._Cheatham
         /// </param>
         private void ChangeBackgroundColorToolStripMenuItemClick(object sender, EventArgs e)
         {
-            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
-            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
-
             this.colorDialog1.ShowDialog();
 
             var color = this.colorDialog1.Color;
@@ -174,6 +171,7 @@ namespace Spreadsheet_D._Cheatham
         /// <param name="e">
         ///     Part that changed
         /// </param>
+        [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1126:PrefixCallsCorrectly", Justification = "Reviewed. Suppression is OK here.")]
         private void OnEngineCellChange(object sender, PropertyChangedEventArgs e)
         {
             var engineCell = (Cell)sender;

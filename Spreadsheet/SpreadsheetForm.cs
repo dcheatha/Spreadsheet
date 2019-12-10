@@ -253,6 +253,21 @@ namespace Spreadsheet_D._Cheatham
         }
 
         /// <summary>
+        ///     Redoes stuff
+        /// </summary>
+        /// <param name="sender">
+        ///     Sender sender
+        /// </param>
+        /// <param name="e">
+        ///     Event event
+        /// </param>
+        private void RedoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            this.spreadsheet.Redo();
+            this.ProcessUndoRedo();
+        }
+
+        /// <summary>
         ///     Loads the spreadsheet
         /// </summary>
         /// <param name="sender">
@@ -303,21 +318,6 @@ namespace Spreadsheet_D._Cheatham
         private void UndoToolStripMenuItemClick(object sender, EventArgs e)
         {
             this.spreadsheet.Undo();
-            this.ProcessUndoRedo();
-        }
-
-        /// <summary>
-        /// Redoes stuff
-        /// </summary>
-        /// <param name="sender">
-        /// Sender sender
-        /// </param>
-        /// <param name="e">
-        /// Event event
-        /// </param>
-        private void RedoToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            this.spreadsheet.Redo();
             this.ProcessUndoRedo();
         }
     }

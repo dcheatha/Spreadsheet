@@ -20,6 +20,7 @@ namespace SpreadsheetEngine
 {
     #region
 
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
@@ -244,7 +245,6 @@ namespace SpreadsheetEngine
         {
             var (property, oldValue) = this.UndoHistory.Pop();
 
-
             if (property == "value")
             {
                 this.RedoHistory.Push((property, this.Value));
@@ -258,8 +258,57 @@ namespace SpreadsheetEngine
                 this.Color = uint.Parse(oldValue);
                 this.UndoHistory.Pop();
             }
-
         }
+
+        /// <summary>
+        /// Determines if the cell has a circular reference
+        /// </summary>
+        /// <param name="visitedCells">
+        /// List of visited cells
+        /// </param>
+        /// <param name="key">
+        /// Key of cell to check
+        /// </param>
+        /// <returns>
+        /// True or false
+        /// </returns>
+        private bool HasCircularReference(List<SpreadsheetCell> visitedCells, string key)
+        {
+            foreach (var cell in this.referencedCells)
+            {
+                if (visitedCells.Contains(cell))
+                {
+                    continue;
+                }
+
+                visitedCells.Add(cell);
+
+                if (cell.Key == key)
+                {
+                    return true;
+                }
+
+                if (cell.HasCircularReference(visitedCells, key))
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the cell has a circular reference
+        /// </summary>
+        /// <returns>
+        /// True or false
+        /// </returns>
+        private bool HasCircularReference()
+        {
+            return this.HasCircularReference(new List<SpreadsheetCell>(), this.Key);
+        }
+
 
         /// <summary>
         ///     Evaluate the cell
@@ -279,6 +328,12 @@ namespace SpreadsheetEngine
         )]
         private void Evaluate(string value)
         {
+            if (this.HasCircularReference())
+            {
+                this.Text = "[circularReference]";
+                return;
+            }
+
             if (value == string.Empty)
             {
                 this.Text = string.Empty;

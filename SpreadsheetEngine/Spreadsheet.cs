@@ -25,6 +25,7 @@ namespace SpreadsheetEngine
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
 
     #endregion
 
@@ -39,6 +40,16 @@ namespace SpreadsheetEngine
         ///     Dictionary of cells, in A1, A2, B3, etc format
         /// </summary>
         private readonly Dictionary<string, Cell> cells = new Dictionary<string, Cell>();
+
+        /// <summary>
+        ///     Redo stack
+        /// </summary>
+        private readonly Stack<SpreadsheetCell> redoStack = new Stack<SpreadsheetCell>();
+
+        /// <summary>
+        ///     Undo stack
+        /// </summary>
+        private readonly Stack<SpreadsheetCell> undoStack = new Stack<SpreadsheetCell>();
 
         /// <summary>
         ///     Dictionary shared among all cells' expression trees
@@ -76,6 +87,22 @@ namespace SpreadsheetEngine
         public event PropertyChangedEventHandler CellPropertyChanged;
 
         /// <summary>
+        ///     Can I redo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanRedo => this.redoStack.Count > 0;
+
+        /// <summary>
+        ///     Can I undo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanUndo => this.undoStack.Count > 0;
+
+        /// <summary>
         ///     Gets Number of Columns
         /// </summary>
         public int ColumnCount { get; }
@@ -108,12 +135,12 @@ namespace SpreadsheetEngine
                 So, we can just use base 27 and replace the digits with the ones we'd like:
             */
 
-            var alphabetStart = 'A';
+            const char AlphabetStart = 'A';
             var result = 0;
 
             for (var pos = 0; pos < input.Length; pos++)
             {
-                var currentDigit = input[pos] - alphabetStart + 1;
+                var currentDigit = input[pos] - AlphabetStart + 1;
 
                 result += (int)Math.Pow(26, input.Length - pos - 1) * currentDigit;
             }
@@ -130,6 +157,16 @@ namespace SpreadsheetEngine
         /// <returns>
         ///     Alphanumeric value
         /// </returns>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.MaintainabilityRules",
+            "SA1407:ArithmeticExpressionsMustDeclarePrecedence",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         public static string IntegerToAlphanumeric(ref int input)
         {
             var result = string.Empty;
@@ -138,7 +175,7 @@ namespace SpreadsheetEngine
             do
             {
                 value--;
-                result = (char)('A' + (value % 26)) + result;
+                result = (char)('A' + value % 26) + result;
                 value /= 26;
             }
             while (value > 0);
@@ -190,6 +227,36 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Run this to request a cell's color be updated
+        /// </summary>
+        /// <param name="column">
+        ///     Column id
+        /// </param>
+        /// <param name="row">
+        ///     row id
+        /// </param>
+        /// <param name="r">
+        ///     the red
+        /// </param>
+        /// <param name="g">
+        ///     the green
+        /// </param>
+        /// <param name="b">
+        ///     the blue
+        /// </param>
+        public void FormCellColorChange(int column, int row, int r, int g, int b)
+        {
+            var changedCell = this.GetSpreadsheetCell(column, row);
+
+            if (changedCell == null)
+            {
+                return;
+            }
+
+            changedCell.ColorRgb = (255, r, g, b);
+        }
+
+        /// <summary>
         ///     Gets a Cell from the Spreadsheet
         /// </summary>
         /// <param name="column">
@@ -206,6 +273,82 @@ namespace SpreadsheetEngine
             var key = SpreadsheetCell.GenerateKey(column, row);
 
             return this.cells.ContainsKey(key) ? this.cells[key] : null;
+        }
+
+        /// <summary>
+        ///     Redo function
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     There is nothing to undo
+        /// </exception>
+        public void Redo()
+        {
+            if (!this.CanRedo)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var cell = this.redoStack.Pop();
+            cell.Redo();
+        }
+
+        /// <summary>
+        ///     Peak Redo
+        /// </summary>
+        /// <returns>
+        ///     Peaked undo
+        /// </returns>
+        public (string, string, string) RedoPeak()
+        {
+            if (!this.CanRedo)
+            {
+                return (null, string.Empty, string.Empty);
+            }
+
+            var (property, value) = this.redoStack.Peek().PeakRedo();
+
+            var cell = this.redoStack.Peek();
+
+            return (SpreadsheetCell.GenerateKey(cell.ColumnIndex, cell.RowIndex), property, value);
+        }
+
+        /// <summary>
+        ///     Undo function
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     There is nothing to undo
+        /// </exception>
+        public void Undo()
+        {
+            if (!this.CanUndo)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var cell = this.undoStack.Pop();
+            cell.Undo();
+            this.undoStack.Pop();
+            this.redoStack.Push(cell);
+        }
+
+        /// <summary>
+        ///     Peak Undo
+        /// </summary>
+        /// <returns>
+        ///     Peaked undo
+        /// </returns>
+        public (string, string, string) UndoPeak()
+        {
+            if (!this.CanUndo)
+            {
+                return (null, string.Empty, string.Empty);
+            }
+
+            var (property, value) = this.undoStack.Peek().PeakUndo();
+
+            var cell = this.undoStack.Peek();
+
+            return (SpreadsheetCell.GenerateKey(cell.ColumnIndex, cell.RowIndex), property, value);
         }
 
         /// <summary>
@@ -252,12 +395,12 @@ namespace SpreadsheetEngine
         /// </param>
         private void EngineCellChange(object cell, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "text")
+            if (e.PropertyName == "color" || e.PropertyName == "value")
             {
-                return;
+                this.undoStack.Push((SpreadsheetCell)cell);
             }
 
-            this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.ToString()));
+            this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs(e.PropertyName));
         }
     }
 }

@@ -13,7 +13,9 @@ namespace Spreadsheet_D._Cheatham
     #region
 
     using System;
+    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
+    using System.Drawing;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
 
@@ -53,6 +55,27 @@ namespace Spreadsheet_D._Cheatham
         /// </returns>
         [DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
+
+        /// <summary>
+        ///     Launch the Change Background Color thing
+        /// </summary>
+        /// <param name="sender">
+        ///     Event Sender
+        /// </param>
+        /// <param name="e">
+        ///     Event E thing
+        /// </param>
+        private void ChangeBackgroundColorToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            this.colorDialog1.ShowDialog();
+
+            var color = this.colorDialog1.Color;
+
+            foreach (DataGridViewTextBoxCell cell in this.mainDataGridView.SelectedCells)
+            {
+                this.spreadsheet.FormCellColorChange(cell.ColumnIndex, cell.RowIndex, color.R, color.G, color.B);
+            }
+        }
 
         /// <summary>
         ///     On cell start edit
@@ -103,7 +126,7 @@ namespace Spreadsheet_D._Cheatham
             var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
             var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
             var cell = this.spreadsheet.GetCell(columnIndex, rowIndex);
-            this.formulaBox.Text = $@"Text: {cell.Text} Value: {cell.Value}";
+            this.formulaBox.Text = $@"({columnIndex + 1}, {rowIndex + 1}) Text: {cell.Text} Value: {cell.Value}";
         }
 
         /// <summary>
@@ -127,14 +150,16 @@ namespace Spreadsheet_D._Cheatham
         )]
         private void OnEditControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            if (e.Control is TextBox box)
+            if (!(e.Control is TextBox box))
             {
-                this.editBox = box;
-                var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
-                var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
-
-                this.editBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
+                return;
             }
+
+            this.editBox = box;
+            var rowIndex = this.mainDataGridView.CurrentCell.RowIndex;
+            var columnIndex = this.mainDataGridView.CurrentCell.ColumnIndex;
+
+            this.editBox.Text = this.spreadsheet.GetCell(columnIndex, rowIndex).Value;
         }
 
         /// <summary>
@@ -146,11 +171,37 @@ namespace Spreadsheet_D._Cheatham
         /// <param name="e">
         ///     Part that changed
         /// </param>
-        private void OnEngineCellChange(object sender, EventArgs e)
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        private void OnEngineCellChange(object sender, PropertyChangedEventArgs e)
         {
-            var cell = (Cell)sender;
-            Console.WriteLine($@"EngineCell changed with text {cell.Text} value {cell.Value}");
-            this.mainDataGridView.Rows[cell.RowIndex].Cells[cell.ColumnIndex].Value = cell.Text;
+            var engineCell = (Cell)sender;
+            var formCell = this.mainDataGridView.Rows[engineCell.RowIndex].Cells[engineCell.ColumnIndex];
+            switch (e.PropertyName)
+            {
+                case "value":
+                {
+                    break;
+                }
+
+                case "text":
+                {
+                    formCell.Value = engineCell.Text;
+                    break;
+                }
+
+                case "color":
+                {
+                    var (a, r, g, b) = engineCell.ColorRgb;
+                    formCell.Style.BackColor = Color.FromArgb(a, r, g, b);
+                    break;
+                }
+            }
+
+            this.ProcessUndoRedo();
         }
 
         /// <summary>
@@ -170,6 +221,50 @@ namespace Spreadsheet_D._Cheatham
             var value = (string)this.mainDataGridView.Rows[rowIndex].Cells[columnIndex].Value;
 
             this.spreadsheet.FormCellChange(columnIndex, rowIndex, value);
+        }
+
+        /// <summary>
+        ///     Process undo and redo states
+        /// </summary>
+        private void ProcessUndoRedo()
+        {
+            if (this.spreadsheet.CanUndo)
+            {
+                var (cell, property, value) = this.spreadsheet.UndoPeak();
+                this.undoToolStripMenuItem.Text = $@"Undo (Set {cell} {property} to '{value}')";
+            }
+            else
+            {
+                this.undoToolStripMenuItem.Text = @"Undo";
+            }
+
+            if (this.spreadsheet.CanRedo)
+            {
+                var (cell, property, value) = this.spreadsheet.RedoPeak();
+                this.redoToolStripMenuItem.Text = $@"Redo (Set {cell} {property} to '{value}')";
+            }
+            else
+            {
+                this.redoToolStripMenuItem.Text = @"Redo";
+            }
+
+            this.undoToolStripMenuItem.Enabled = this.spreadsheet.CanUndo;
+            this.redoToolStripMenuItem.Enabled = this.spreadsheet.CanRedo;
+        }
+
+        /// <summary>
+        ///     Redoes stuff
+        /// </summary>
+        /// <param name="sender">
+        ///     Sender sender
+        /// </param>
+        /// <param name="e">
+        ///     Event event
+        /// </param>
+        private void RedoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            this.spreadsheet.Redo();
+            this.ProcessUndoRedo();
         }
 
         /// <summary>
@@ -208,6 +303,22 @@ namespace Spreadsheet_D._Cheatham
             this.mainDataGridView.CellBeginEdit += this.OnCellBeginEdit;
             this.mainDataGridView.CellEndEdit += this.OnCellEndEdit;
             this.mainDataGridView.EditingControlShowing += this.OnEditControlShowing;
+            this.ProcessUndoRedo();
+        }
+
+        /// <summary>
+        ///     Undo Stuff
+        /// </summary>
+        /// <param name="sender">
+        ///     Sender sender
+        /// </param>
+        /// <param name="e">
+        ///     Event e
+        /// </param>
+        private void UndoToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            this.spreadsheet.Undo();
+            this.ProcessUndoRedo();
         }
     }
 }

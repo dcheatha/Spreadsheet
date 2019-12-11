@@ -132,7 +132,7 @@ namespace SpreadsheetEngine
         /// <summary>
         ///     Returns a list of variables
         /// </summary>
-        public List<string> GetVariables => FindVariables(this.rawExpression).ToList();
+        public IEnumerable<string> GetVariables => FindVariables(this.rawExpression).ToList();
 
         /// <summary>
         ///     Adds default expression operators (Add, Subtract, Divide, Multiply, and Power)

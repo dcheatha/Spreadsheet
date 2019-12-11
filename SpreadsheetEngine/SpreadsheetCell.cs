@@ -22,6 +22,7 @@ namespace SpreadsheetEngine
 
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -52,6 +53,7 @@ namespace SpreadsheetEngine
             : base(columnIndex, rowIndex)
         {
             this.expressionTree = new ExpressionTree(string.Empty, variablesDictionary);
+            this.expressionTree.SetVariable(this.Key, 0);
         }
 
         /// <summary>
@@ -93,8 +95,35 @@ namespace SpreadsheetEngine
         /// </param>
         public void AddReferencedCell(SpreadsheetCell cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             cell.PropertyChanged += this.OnVariableChanged;
             this.referencedCells.Add(cell);
+        }
+
+        /// <summary>
+        ///     Can I redo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanRedo()
+        {
+            return this.RedoHistory.Count != 0;
+        }
+
+        /// <summary>
+        ///     Can I undo
+        /// </summary>
+        /// <returns>
+        ///     What do you think?
+        /// </returns>
+        public bool CanUndo()
+        {
+            return this.UndoHistory.Count != 0;
         }
 
         /// <summary>
@@ -143,6 +172,56 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        ///     Peak the redoHistory
+        /// </summary>
+        /// <returns>
+        ///     Peaked redoHistory
+        /// </returns>
+        public (string, string) PeakRedo()
+        {
+            return this.RedoHistory.Peek();
+        }
+
+        /// <summary>
+        ///     Peak the undoHistory
+        /// </summary>
+        /// <returns>
+        ///     Peaked undoHistory
+        /// </returns>
+        public (string, string) PeakUndo()
+        {
+            return this.UndoHistory.Peek();
+        }
+
+        /// <summary>
+        ///     Redo Function
+        /// </summary>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        public void Redo()
+        {
+            var (property, value) = this.RedoHistory.Pop();
+
+            if (property == "value")
+            {
+                this.Evaluate(value);
+            }
+
+            if (property == "color")
+            {
+                this.Color = uint.Parse(value);
+            }
+        }
+
+        /// <summary>
         ///     Remove a reference to a cell
         /// </summary>
         /// <param name="cell">
@@ -150,8 +229,45 @@ namespace SpreadsheetEngine
         /// </param>
         public void RemoveReferencedCell(SpreadsheetCell cell)
         {
+            if (cell == null)
+            {
+                return;
+            }
+
             cell.PropertyChanged -= this.OnVariableChanged;
             this.referencedCells.Remove(cell);
+        }
+
+        /// <summary>
+        ///     Undo Function
+        /// </summary>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        public void Undo()
+        {
+            var (property, oldValue) = this.UndoHistory.Pop();
+
+            if (property == "value")
+            {
+                this.RedoHistory.Push((property, this.Value));
+                this.Evaluate(oldValue);
+                this.UndoHistory.Pop();
+            }
+
+            if (property == "color")
+            {
+                this.RedoHistory.Push((property, this.Color.ToString()));
+                this.Color = uint.Parse(oldValue);
+                this.UndoHistory.Pop();
+            }
         }
 
         /// <summary>
@@ -160,13 +276,40 @@ namespace SpreadsheetEngine
         /// <param name="value">
         ///     Value to evaluate with
         /// </param>
+        [SuppressMessage(
+            "StyleCop.CSharp.SpacingRules",
+            "SA1009:ClosingParenthesisMustBeSpacedCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
+        [SuppressMessage(
+            "StyleCop.CSharp.ReadabilityRules",
+            "SA1126:PrefixCallsCorrectly",
+            Justification = "Reviewed. Suppression is OK here."
+        )]
         private void Evaluate(string value)
         {
+            if (this.HasCircularReference())
+            {
+                this.Text = "[circularReference]";
+                return;
+            }
+
+            if (!this.expressionTree.HasVariables())
+            {
+                this.Text = "[badReference]";
+                return;
+            }
+
             if (value == string.Empty)
             {
+                this.Text = string.Empty;
                 base.Value = string.Empty;
-                this.EmitPropertyChanged("value");
                 return;
+            }
+
+            if (double.TryParse(value, out _))
+            {
+                value = "=" + value;
             }
 
             var matcher = new Regex("^=[A-Z]+[0-9]+$");
@@ -183,28 +326,79 @@ namespace SpreadsheetEngine
             {
                 this.Text = this.referencedCells.First().Text;
                 this.Value = value;
-                this.EmitPropertyChanged("text");
-                this.EmitPropertyChanged("value");
-                return;
+                if (double.TryParse(this.Value, out var result))
+                {
+                    this.expressionTree.SetVariable(this.Key, result);
+                }
+                else
+                {
+                    this.expressionTree.SetVariable(this.Key, 0);
+                }
             }
-
-            if (value.StartsWith("="))
+            else if (value.StartsWith("="))
             {
                 this.expressionTree.SetExpression(value.Substring(1));
                 var expressionValue = this.expressionTree.Evaluate();
                 base.Value = value;
+
                 this.expressionTree.SetVariable(this.Key, expressionValue);
                 this.Text = expressionValue.ToString("G");
-                this.EmitPropertyChanged("text");
-                this.EmitPropertyChanged("value");
             }
             else
             {
                 base.Value = value;
                 this.Text = value;
-                this.EmitPropertyChanged("value");
-                this.EmitPropertyChanged("text");
+
+                this.expressionTree.SetVariable(this.Key, 0);
             }
+        }
+
+        /// <summary>
+        ///     Determines if the cell has a circular reference
+        /// </summary>
+        /// <param name="visitedCells">
+        ///     List of visited cells
+        /// </param>
+        /// <param name="key">
+        ///     Key of cell to check
+        /// </param>
+        /// <returns>
+        ///     True or false
+        /// </returns>
+        private bool HasCircularReference(List<SpreadsheetCell> visitedCells, string key)
+        {
+            foreach (var cell in this.referencedCells)
+            {
+                if (visitedCells.Contains(cell))
+                {
+                    continue;
+                }
+
+                visitedCells.Add(cell);
+
+                if (cell.Key == key)
+                {
+                    return true;
+                }
+
+                if (cell.HasCircularReference(visitedCells, key))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Determines if the cell has a circular reference
+        /// </summary>
+        /// <returns>
+        ///     True or false
+        /// </returns>
+        private bool HasCircularReference()
+        {
+            return this.HasCircularReference(new List<SpreadsheetCell>(), this.Key);
         }
     }
 }

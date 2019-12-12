@@ -16,5 +16,5 @@ This was the Spreadsheet Application for Object-Oriented Software Principles, a 
 * Additional operators may be added
 * Standalone Logic engine
 
-## Class Diagram 
+## Class Diagram of Spreadsheet Engine
 ![Class Diagram](/SpreadsheetEngineUML.png)

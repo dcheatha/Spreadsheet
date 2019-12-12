@@ -15,3 +15,6 @@ This was the Spreadsheet Application for Object-Oriented Software Principles, a 
 * ExpressionTree uses composite design pattern
 * Additional operators may be added
 * Standalone Logic engine
+
+## Class Diagram 
+![Class Diagram](/SpreadsheetEngineUML.png)
